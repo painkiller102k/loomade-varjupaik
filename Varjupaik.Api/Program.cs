@@ -58,7 +58,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Piltide näitamiseks wwwroot kaustast
+// Veebileht ja pildid wwwroot kaustast
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseAuthentication();

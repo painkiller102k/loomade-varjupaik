@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sisselogimine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <strong>Loomade varjupaik</strong>
+    <nav id="menu"></nav>
+</header>
+
+<main>
+    <form id="loginForm" class="box">
+        <h2>Logi sisse</h2>
+        <label>Email</label>
+        <input id="loginEmail" type="email" required>
+        <label>Parool</label>
+        <input id="loginPassword" type="password" required>
+        <button type="submit">Logi sisse</button>
+    </form>
+
+    <form id="registerForm" class="box">
+        <h2>Registreeru</h2>
+        <label>Nimi</label>
+        <input id="regName" required>
+        <label>Email</label>
+        <input id="regEmail" type="email" required>
+        <label>Parool (vähemalt 6 märki)</label>
+        <input id="regPassword" type="password" minlength="6" required>
+        <button type="submit">Registreeru</button>
+    </form>
+
+    <div id="message" class="message"></div>
+</main>
+
+<script src="app.js"></script>
+<script>
+    async function send(url, body) {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (response.ok) {
+            saveUser(await response.json());
+            window.location.href = "index.html";
+        } else {
+            document.getElementById("message").textContent = await errorText(response);
+        }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        send("/api/auth/login", {
+            email: document.getElementById("loginEmail").value,
+            password: document.getElementById("loginPassword").value
+        });
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        send("/api/auth/register", {
+            name: document.getElementById("regName").value,
+            email: document.getElementById("regEmail").value,
+            password: document.getElementById("regPassword").value
+        });
+    });
+
+    showMenu();
+</script>
+</body>
+</html>
