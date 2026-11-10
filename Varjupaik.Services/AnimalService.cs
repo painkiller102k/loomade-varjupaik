@@ -14,6 +14,26 @@ public class AnimalService
         _db = db;
     }
 
+    // Avalik nimekiri, filtrid on valikulised
+    public async Task<List<AnimalDto>> GetAllAsync(string? species, AnimalStatus? status)
+    {
+        var query = _db.Animals.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(species))
+        {
+            var s = species.Trim().ToLower();
+            query = query.Where(a => a.Species.ToLower() == s);
+        }
+
+        if (status != null)
+        {
+            query = query.Where(a => a.Status == status);
+        }
+
+        var animals = await query.OrderByDescending(a => a.CreatedAt).ToListAsync();
+        return animals.Select(AnimalDto.FromAnimal).ToList();
+    }
+
     public async Task<AnimalDto?> GetByIdAsync(int id)
     {
         var animal = await _db.Animals.FindAsync(id);
