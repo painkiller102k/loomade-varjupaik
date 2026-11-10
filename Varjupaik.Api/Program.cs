@@ -107,8 +107,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Veebileht ja pildid wwwroot kaustast
-app.UseDefaultFiles();
+// Üles laaditud pildid wwwroot/uploads kaustast
 app.UseStaticFiles();
 
 app.UseCors("Frontend");
