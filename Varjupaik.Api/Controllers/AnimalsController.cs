@@ -5,8 +5,12 @@ using Varjupaik.Services.Dtos;
 
 namespace Varjupaik.Api.Controllers;
 
+/// <summary>
+/// Loomade nimekiri (avalik) ja loomade haldus (Admin, Staff)
+/// </summary>
 [ApiController]
 [Route("api/animals")]
+[Produces("application/json")]
 [Authorize(Roles = "Admin,Staff")]
 public class AnimalsController : ControllerBase
 {
@@ -19,17 +23,32 @@ public class AnimalsController : ControllerBase
         _env = env;
     }
 
-    // GET /api/animals?species=&status=&search=&sortBy=&page=&pageSize=
+    /// <summary>
+    /// Avalik loomade nimekiri filtrite, otsingu, sorteerimise ja lehekülgedega
+    /// </summary>
+    /// <remarks>
+    /// Näide: GET /api/animals?species=Koer&amp;status=Available&amp;search=sõbralik&amp;sortBy=name&amp;page=1&amp;pageSize=9
+    /// </remarks>
+    /// <response code="200">Lehekülg loomadega</response>
     [HttpGet]
     [AllowAnonymous]
+    [ProducesResponseType(typeof(PagedResult<AnimalDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] AnimalQuery query)
     {
         var result = await _animalService.GetAllAsync(query);
         return Ok(result);
     }
 
+    /// <summary>
+    /// Ühe looma andmed
+    /// </summary>
+    /// <param name="id">Looma id</param>
+    /// <response code="200">Loom leiti</response>
+    /// <response code="404">Looma ei leitud</response>
     [HttpGet("{id}")]
     [AllowAnonymous]
+    [ProducesResponseType(typeof(AnimalDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id)
     {
         var animal = await _animalService.GetByIdAsync(id);
@@ -40,7 +59,19 @@ public class AnimalsController : ControllerBase
         return Ok(animal);
     }
 
+    /// <summary>
+    /// Lisab uue looma (multipart/form-data, pilt on valikuline)
+    /// </summary>
+    /// <response code="201">Loom lisati</response>
+    /// <response code="400">Vigased andmed või vale pildifail</response>
+    /// <response code="401">Pole sisse logitud</response>
+    /// <response code="403">Roll ei ole Admin ega Staff</response>
     [HttpPost]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(typeof(AnimalDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromForm] AnimalSaveDto dto, IFormFile? photo)
     {
         var photoPath = await SavePhoto(photo);
@@ -53,7 +84,18 @@ public class AnimalsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = animal.Id }, animal);
     }
 
+    /// <summary>
+    /// Muudab looma andmeid (uus pilt on valikuline)
+    /// </summary>
+    /// <param name="id">Looma id</param>
+    /// <response code="200">Loom muudeti</response>
+    /// <response code="400">Vigased andmed</response>
+    /// <response code="404">Looma ei leitud</response>
     [HttpPut("{id}")]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(typeof(AnimalDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int id, [FromForm] AnimalSaveDto dto, IFormFile? photo)
     {
         var photoPath = await SavePhoto(photo);
@@ -70,7 +112,15 @@ public class AnimalsController : ControllerBase
         return Ok(animal);
     }
 
+    /// <summary>
+    /// Kustutab looma
+    /// </summary>
+    /// <param name="id">Looma id</param>
+    /// <response code="204">Kustutatud</response>
+    /// <response code="404">Looma ei leitud</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _animalService.DeleteAsync(id);
