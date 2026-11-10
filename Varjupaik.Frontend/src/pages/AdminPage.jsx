@@ -72,7 +72,7 @@ function AdminPage() {
       {message && <p className={'alert toast alert-' + message.type}>{message.text}</p>}
 
       <div className="admin-layout">
-        <AnimalForm animal={editing} onSave={handleSave} onCancel={() => setEditing(null)} />
+        <AnimalForm key={editing ? editing.id : 'new'} animal={editing} onSave={handleSave} onCancel={() => setEditing(null)} />
 
         <div className="admin-list">
           <div className="filter-row">
