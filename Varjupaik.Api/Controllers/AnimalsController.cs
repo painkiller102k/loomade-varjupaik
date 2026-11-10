@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Varjupaik.Services;
 using Varjupaik.Services.Dtos;
-using Varjupaik.Services.Models;
 
 namespace Varjupaik.Api.Controllers;
 
@@ -20,13 +19,13 @@ public class AnimalsController : ControllerBase
         _env = env;
     }
 
-    // GET /api/animals?species=&status=
+    // GET /api/animals?species=&status=&search=&sortBy=&page=&pageSize=
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAll([FromQuery] string? species, [FromQuery] AnimalStatus? status)
+    public async Task<IActionResult> GetAll([FromQuery] AnimalQuery query)
     {
-        var animals = await _animalService.GetAllAsync(species, status);
-        return Ok(animals);
+        var result = await _animalService.GetAllAsync(query);
+        return Ok(result);
     }
 
     [HttpGet("{id}")]

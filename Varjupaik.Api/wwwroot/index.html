@@ -50,7 +50,7 @@
         if (status) params.append("status", status);
 
         const response = await fetch("/api/animals?" + params.toString());
-        const animals = await response.json();
+        const animals = (await response.json()).items;
 
         const user = getUser();
         const container = document.getElementById("animals");

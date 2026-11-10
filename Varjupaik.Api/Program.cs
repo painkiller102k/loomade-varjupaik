@@ -55,6 +55,7 @@ using (var scope = app.Services.CreateScope())
 
     var seedUsers = builder.Configuration.GetSection("SeedUsers").Get<List<SeedUser>>() ?? new();
     DbSeeder.SeedUsers(db, seedUsers);
+    DbSeeder.SeedAnimals(db);
 }
 
 if (app.Environment.IsDevelopment())
