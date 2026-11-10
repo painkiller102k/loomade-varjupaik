@@ -98,3 +98,13 @@ button {
     margin: 10px 0;
     font-weight: bold;
 }
+
+.no-photo {
+    height: 160px;
+    border-radius: 6px;
+    background: #ddd;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
