@@ -57,3 +57,17 @@ function showMenu() {
     html += '<a href="#" onclick="logout()">Logi välja</a>';
     menu.innerHTML = html;
 }
+
+// Looma pilt; kui pilti pole, näitame halli kasti tekstiga
+function animalImage(animal) {
+    if (!animal.photoUrl) {
+        const box = document.createElement("div");
+        box.className = "no-photo";
+        box.textContent = "Pilt puudub";
+        return box;
+    }
+    const img = document.createElement("img");
+    img.src = animal.photoUrl;
+    img.alt = animal.name;
+    return img;
+}

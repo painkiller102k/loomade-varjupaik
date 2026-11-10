@@ -60,10 +60,7 @@
             const card = document.createElement("div");
             card.className = "card";
 
-            const img = document.createElement("img");
-            img.src = animal.photoUrl || "";
-            img.alt = animal.name;
-            card.appendChild(img);
+            card.appendChild(animalImage(animal));
 
             const title = document.createElement("h3");
             title.textContent = animal.name + " (" + animal.species + ", " + animal.age + " a)";
