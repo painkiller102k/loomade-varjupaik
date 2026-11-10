@@ -14,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Teenused
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AnimalService>();
 builder.Services.AddScoped<TokenService>();
 
 // JWT autentimine
@@ -55,6 +56,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Piltide näitamiseks wwwroot kaustast
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
