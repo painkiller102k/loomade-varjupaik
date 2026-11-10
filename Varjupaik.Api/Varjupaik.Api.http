@@ -1,7 +1,143 @@
-@Varjupaik.Api_HostAddress = http://localhost:5156
+@host = http://localhost:5156
 
-### Avalik loomade nimekiri
-GET {{Varjupaik.Api_HostAddress}}/api/animals
-Accept: application/json
+### 1. Sisselogimine töötajana (kopeeri token muutujasse @staffToken)
+POST {{host}}/api/auth/login
+Content-Type: application/json
 
-###
+{
+  "email": "staff@varjupaik.ee",
+  "password": "Staff123!"
+}
+
+### 2. Registreerimine (uus külastaja, roll Visitor)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "mari@test.ee",
+  "name": "Mari Maasikas",
+  "password": "mari123"
+}
+
+### 3. Sisselogimine külastajana (kopeeri token muutujasse @visitorToken)
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "mari@test.ee",
+  "password": "mari123"
+}
+
+### Tokenid (kleebi siia login päringu vastusest)
+@staffToken = PASTE_STAFF_TOKEN
+@visitorToken = PASTE_VISITOR_TOKEN
+
+### 4. Avalik nimekiri (kõik loomad)
+GET {{host}}/api/animals
+
+### 5. Avalik nimekiri filtritega
+GET {{host}}/api/animals?species=Koer&status=Available
+
+### 6. Otsing, sorteerimine ja leheküljed
+GET {{host}}/api/animals?search=sõbralik&sortBy=name&page=1&pageSize=5
+
+### 7. Üks loom
+GET {{host}}/api/animals/1
+
+### 8. Looma ei leitud (404)
+GET {{host}}/api/animals/9999
+
+### 9. Lisa loom (Staff), multipart/form-data
+POST {{host}}/api/animals
+Authorization: Bearer {{staffToken}}
+Content-Type: multipart/form-data; boundary=piir
+
+--piir
+Content-Disposition: form-data; name="Name"
+
+Pätu
+--piir
+Content-Disposition: form-data; name="Species"
+
+Koer
+--piir
+Content-Disposition: form-data; name="Age"
+
+2
+--piir
+Content-Disposition: form-data; name="Description"
+
+Mänguhimuline kutsikas
+--piir
+Content-Disposition: form-data; name="Status"
+
+Available
+--piir--
+
+### 10. Lisa loom ilma tokenita (401)
+POST {{host}}/api/animals
+Content-Type: multipart/form-data; boundary=piir
+
+--piir
+Content-Disposition: form-data; name="Name"
+
+Test
+--piir--
+
+### 11. Muuda looma (Staff)
+PUT {{host}}/api/animals/1
+Authorization: Bearer {{staffToken}}
+Content-Type: multipart/form-data; boundary=piir
+
+--piir
+Content-Disposition: form-data; name="Name"
+
+Muri
+--piir
+Content-Disposition: form-data; name="Species"
+
+Koer
+--piir
+Content-Disposition: form-data; name="Age"
+
+4
+--piir
+Content-Disposition: form-data; name="Description"
+
+Sõbralik ja rõõmsameelne koer
+--piir
+Content-Disposition: form-data; name="Status"
+
+Available
+--piir--
+
+### 12. Kustuta loom (Staff)
+DELETE {{host}}/api/animals/11
+Authorization: Bearer {{staffToken}}
+
+### 13. Adopteerimise taotlus (Visitor)
+POST {{host}}/api/animals/1/applications
+Authorization: Bearer {{visitorToken}}
+Content-Type: application/json
+
+{
+  "message": "Mul on suur aed ja palju aega koeraga jalutamiseks."
+}
+
+### 14. Taotlus vigaste andmetega (400)
+POST {{host}}/api/animals/1/applications
+Authorization: Bearer {{visitorToken}}
+Content-Type: application/json
+
+{
+  "message": ""
+}
+
+### 15. Taotlus töötaja tokeniga (403)
+POST {{host}}/api/animals/1/applications
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "message": "Töötaja ei saa taotlust esitada."
+}
