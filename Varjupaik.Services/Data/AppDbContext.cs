@@ -10,9 +10,13 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<Animal> Animals => Set<Animal>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+
+        // Olek salvestatakse tekstina, et andmebaasis oleks loetav
+        modelBuilder.Entity<Animal>().Property(a => a.Status).HasConversion<string>();
     }
 }
