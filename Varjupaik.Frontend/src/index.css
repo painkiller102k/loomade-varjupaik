@@ -219,3 +219,267 @@ main {
 .footer .muted {
   color: #b9c9c0;
 }
+
+/* ===== Sektsioonid ===== */
+.section {
+  padding-top: 48px;
+  scroll-margin-top: 80px;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 38px);
+  color: var(--green-900);
+}
+
+.center {
+  text-align: center;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.alert-error {
+  background: #fde4df;
+  color: #a12f15;
+}
+
+.alert-success {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+/* ===== Filtrid ===== */
+.filters {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+}
+
+.species-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.chip {
+  border: 2px solid var(--border);
+  background: var(--cream);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font: 700 15px 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--sun);
+}
+
+.chip.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.filter-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cream);
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  padding: 0 16px;
+}
+
+.search-box:focus-within {
+  border-color: var(--green);
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  font: 16px 'Nunito', sans-serif;
+  outline: none;
+  min-width: 0;
+}
+
+select {
+  border: 2px solid var(--border);
+  background: var(--cream);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font: 700 15px 'Nunito', sans-serif;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* ===== Looma kaardid ===== */
+.animal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 24px;
+  transition: opacity 0.2s;
+}
+
+.animal-grid.loading {
+  opacity: 0.5;
+}
+
+.animal-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.animal-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+.animal-photo {
+  position: relative;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffe3c2, #ffc6a8);
+}
+
+.animal-photo.species-koer { background: linear-gradient(135deg, #ffe3b0, #ffb98a); }
+.animal-photo.species-kass { background: linear-gradient(135deg, #d9ecff, #b9c8ff); }
+.animal-photo.species-küülik { background: linear-gradient(135deg, #fde2f1, #f6bfdc); }
+.animal-photo.species-lind { background: linear-gradient(135deg, #d8f5e3, #a8e2c0); }
+
+.animal-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.animal-emoji {
+  font-size: 96px;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
+  transition: transform 0.3s;
+}
+
+.animal-card:hover .animal-emoji {
+  transform: scale(1.1) rotate(-6deg);
+}
+
+.status-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-Available { color: var(--green); }
+.status-Reserved { color: #b7791f; }
+.status-Adopted { color: #c2410c; }
+
+.animal-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.animal-body h3 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--green-900);
+}
+
+.animal-meta {
+  margin: 4px 0 8px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.animal-description {
+  margin: 0 0 16px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+}
+
+.empty span {
+  font-size: 48px;
+}
+
+/* ===== Leheküljed ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  min-width: 42px;
+  height: 42px;
+  padding: 0 14px;
+  border: 2px solid var(--border);
+  background: white;
+  border-radius: 999px;
+  font: 700 15px 'Nunito', sans-serif;
+  cursor: pointer;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--green);
+}
+
+.page-btn.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
