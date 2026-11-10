@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Animal> Animals => Set<Animal>();
+    public DbSet<Application> Applications => Set<Application>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,5 +19,6 @@ public class AppDbContext : DbContext
 
         // Olek salvestatakse tekstina, et andmebaasis oleks loetav
         modelBuilder.Entity<Animal>().Property(a => a.Status).HasConversion<string>();
+        modelBuilder.Entity<Application>().Property(a => a.Status).HasConversion<string>();
     }
 }

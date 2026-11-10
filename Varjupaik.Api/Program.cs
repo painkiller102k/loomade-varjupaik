@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Teenused
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AnimalService>();
+builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddScoped<TokenService>();
 
 // JWT autentimine
