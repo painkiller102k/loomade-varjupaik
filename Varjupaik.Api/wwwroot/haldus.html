@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Loomade haldus</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <strong>Loomade varjupaik</strong>
+    <nav id="menu"></nav>
+</header>
+
+<main>
+    <form id="animalForm" class="box">
+        <h2 id="formTitle">Lisa uus loom</h2>
+        <label>Nimi</label>
+        <input id="name" required>
+        <label>Liik</label>
+        <input id="species" placeholder="Kass, Koer, ..." required>
+        <label>Vanus (aastat)</label>
+        <input id="age" type="number" min="0" max="50" value="0" required>
+        <label>Kirjeldus</label>
+        <textarea id="description" rows="3"></textarea>
+        <label>Olek</label>
+        <select id="status">
+            <option value="Available">Saadaval</option>
+            <option value="Reserved">Broneeritud</option>
+            <option value="Adopted">Adopteeritud</option>
+        </select>
+        <label>Pilt</label>
+        <input id="photo" type="file" accept="image/*">
+        <button type="submit">Salvesta</button>
+        <button type="button" onclick="resetForm()">Tühjenda</button>
+    </form>
+
+    <div id="message" class="message"></div>
+
+    <h2>Kõik loomad</h2>
+    <div id="animals" class="animals"></div>
+</main>
+
+<script src="app.js"></script>
+<script>
+    const user = getUser();
+    if (!user || (user.role !== "Admin" && user.role !== "Staff")) {
+        window.location.href = "login.html";
+    }
+
+    let editId = null;
+
+    async function loadAnimals() {
+        const response = await fetch("/api/animals");
+        const animals = await response.json();
+        const container = document.getElementById("animals");
+        container.innerHTML = "";
+
+        for (const animal of animals) {
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const img = document.createElement("img");
+            img.src = animal.photoUrl || "";
+            img.alt = animal.name;
+            card.appendChild(img);
+
+            const title = document.createElement("h3");
+            title.textContent = animal.name + " (" + animal.species + ", " + animal.age + " a)";
+            card.appendChild(title);
+
+            const status = document.createElement("span");
+            status.className = "status " + animal.status;
+            status.textContent = statusNames[animal.status];
+            card.appendChild(status);
+
+            const p = document.createElement("p");
+            const editButton = document.createElement("button");
+            editButton.textContent = "Muuda";
+            editButton.onclick = () => startEdit(animal);
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Kustuta";
+            deleteButton.style.background = "#c62828";
+            deleteButton.style.marginLeft = "6px";
+            deleteButton.onclick = () => deleteAnimal(animal);
+            p.appendChild(editButton);
+            p.appendChild(deleteButton);
+            card.appendChild(p);
+
+            container.appendChild(card);
+        }
+    }
+
+    function startEdit(animal) {
+        editId = animal.id;
+        document.getElementById("formTitle").textContent = "Muuda: " + animal.name;
+        document.getElementById("name").value = animal.name;
+        document.getElementById("species").value = animal.species;
+        document.getElementById("age").value = animal.age;
+        document.getElementById("description").value = animal.description;
+        document.getElementById("status").value = animal.status;
+        window.scrollTo(0, 0);
+    }
+
+    function resetForm() {
+        editId = null;
+        document.getElementById("formTitle").textContent = "Lisa uus loom";
+        document.getElementById("animalForm").reset();
+    }
+
+    async function deleteAnimal(animal) {
+        if (!confirm("Kas kustutada " + animal.name + "?")) return;
+        const response = await api("/api/animals/" + animal.id, { method: "DELETE" });
+        document.getElementById("message").textContent = response.ok ? "Kustutatud" : await errorText(response);
+        loadAnimals();
+    }
+
+    document.getElementById("animalForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Pildi saatmiseks kasutame FormData-t
+        const form = new FormData();
+        form.append("name", document.getElementById("name").value);
+        form.append("species", document.getElementById("species").value);
+        form.append("age", document.getElementById("age").value);
+        form.append("description", document.getElementById("description").value);
+        form.append("status", document.getElementById("status").value);
+        const photo = document.getElementById("photo").files[0];
+        if (photo) form.append("photo", photo);
+
+        const url = editId ? "/api/animals/" + editId : "/api/animals";
+        const response = await api(url, { method: editId ? "PUT" : "POST", body: form });
+
+        const msg = document.getElementById("message");
+        if (response.ok) {
+            msg.textContent = "Salvestatud!";
+            resetForm();
+            loadAnimals();
+        } else {
+            msg.textContent = await errorText(response);
+        }
+    });
+
+    showMenu();
+    loadAnimals();
+</script>
+</body>
+</html>
