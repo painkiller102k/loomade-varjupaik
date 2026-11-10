@@ -1,0 +1,16 @@
+function Logo() {
+  return (
+    <svg className="logo-icon" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="32" fill="#1f5f4a" />
+      <g fill="#ffb347">
+        <ellipse cx="32" cy="40" rx="11" ry="9" />
+        <ellipse cx="18" cy="27" rx="5" ry="6.5" />
+        <ellipse cx="46" cy="27" rx="5" ry="6.5" />
+        <ellipse cx="25" cy="17" rx="4.5" ry="6" />
+        <ellipse cx="39" cy="17" rx="4.5" ry="6" />
+      </g>
+    </svg>
+  )
+}
+
+export default Logo
