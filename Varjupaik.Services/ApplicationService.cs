@@ -1,23 +1,24 @@
-using Microsoft.EntityFrameworkCore;
-using Varjupaik.Services.Data;
 using Varjupaik.Services.Dtos;
 using Varjupaik.Services.Models;
+using Varjupaik.Services.Repositories;
 
 namespace Varjupaik.Services;
 
 public class ApplicationService
 {
-    private readonly AppDbContext _db;
+    private readonly IApplicationRepository _applications;
+    private readonly IAnimalRepository _animals;
 
-    public ApplicationService(AppDbContext db)
+    public ApplicationService(IApplicationRepository applications, IAnimalRepository animals)
     {
-        _db = db;
+        _applications = applications;
+        _animals = animals;
     }
 
     // Tagastab (taotlus, veateade). Kui veateade pole null, siis taotlust ei loodud.
     public async Task<(ApplicationDto? Application, string? Error)> CreateAsync(int animalId, int userId, ApplicationCreateDto dto)
     {
-        var animal = await _db.Animals.FindAsync(animalId);
+        var animal = await _animals.GetByIdAsync(animalId);
         if (animal == null)
         {
             return (null, "Looma ei leitud");
@@ -28,8 +29,7 @@ public class ApplicationService
             return (null, "See loom on juba adopteeritud");
         }
 
-        var alreadyApplied = await _db.Applications.AnyAsync(a =>
-            a.AnimalId == animalId && a.ApplicantUserId == userId && a.Status == ApplicationStatus.New);
+        var alreadyApplied = await _applications.HasNewApplicationAsync(animalId, userId);
         if (alreadyApplied)
         {
             return (null, "Sul on sellele loomale juba taotlus esitatud");
@@ -42,8 +42,7 @@ public class ApplicationService
             Message = dto.Message
         };
 
-        _db.Applications.Add(application);
-        await _db.SaveChangesAsync();
+        await _applications.AddAsync(application);
         return (ApplicationDto.FromApplication(application), null);
     }
 }
