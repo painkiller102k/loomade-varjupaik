@@ -6,7 +6,11 @@ using Varjupaik.Services.Dtos;
 
 namespace Varjupaik.Api.Controllers;
 
+/// <summary>
+/// Adopteerimise taotlused
+/// </summary>
 [ApiController]
+[Produces("application/json")]
 public class ApplicationsController : ControllerBase
 {
     private readonly ApplicationService _applicationService;
@@ -16,8 +20,22 @@ public class ApplicationsController : ControllerBase
         _applicationService = applicationService;
     }
 
-    // POST /api/animals/{id}/applications
+    /// <summary>
+    /// Külastaja esitab loomale adopteerimise taotluse
+    /// </summary>
+    /// <param name="id">Looma id</param>
+    /// <param name="dto">Taotluse sõnum</param>
+    /// <response code="201">Taotlus loodi</response>
+    /// <response code="400">Loom on juba adopteeritud või taotlus on juba olemas</response>
+    /// <response code="401">Pole sisse logitud</response>
+    /// <response code="403">Roll ei ole Visitor</response>
+    /// <response code="404">Looma ei leitud</response>
     [HttpPost("api/animals/{id}/applications")]
+    [ProducesResponseType(typeof(ApplicationDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Authorize(Roles = "Visitor")]
     public async Task<IActionResult> Create(int id, ApplicationCreateDto dto)
     {
@@ -33,6 +51,6 @@ public class ApplicationsController : ControllerBase
             return BadRequest(new { message = error });
         }
 
-        return Ok(application);
+        return StatusCode(StatusCodes.Status201Created, application);
     }
 }

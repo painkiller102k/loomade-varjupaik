@@ -32,16 +32,24 @@ public class AnimalDto
 
 public class AnimalSaveDto
 {
-    [Required]
+    /// <example>Muri</example>
+    [Required, MaxLength(50)]
     public string Name { get; set; } = "";
 
-    [Required]
+    /// <example>Koer</example>
+    [Required, MaxLength(30)]
     public string Species { get; set; } = "";
 
+    /// <summary>Vanus aastates</summary>
+    /// <example>3</example>
     [Range(0, 50)]
     public int Age { get; set; }
 
+    /// <example>Sõbralik koer, kes armastab jalutamist.</example>
+    [MaxLength(1000)]
     public string Description { get; set; } = "";
 
+    /// <summary>Available, Reserved või Adopted</summary>
+    /// <example>Available</example>
     public AnimalStatus Status { get; set; } = AnimalStatus.Available;
 }

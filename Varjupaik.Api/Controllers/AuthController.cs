@@ -6,8 +6,12 @@ using Varjupaik.Services.Dtos;
 
 namespace Varjupaik.Api.Controllers;
 
+/// <summary>
+/// Registreerimine ja sisselogimine
+/// </summary>
 [ApiController]
 [Route("api/auth")]
+[Produces("application/json")]
 [AllowAnonymous]
 public class AuthController : ControllerBase
 {
@@ -20,7 +24,14 @@ public class AuthController : ControllerBase
         _tokenService = tokenService;
     }
 
+    /// <summary>
+    /// Registreerib uue külastaja (roll Visitor) ja tagastab tokeni
+    /// </summary>
+    /// <response code="200">Kasutaja loodi</response>
+    /// <response code="400">Email on juba kasutusel või andmed on vigased</response>
     [HttpPost("register")]
+    [ProducesResponseType(typeof(LoginResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(RegisterDto dto)
     {
         var user = await _authService.RegisterAsync(dto);
@@ -38,7 +49,14 @@ public class AuthController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Sisselogimine, tagastab JWT tokeni
+    /// </summary>
+    /// <response code="200">Õige email ja parool</response>
+    /// <response code="401">Vale email või parool</response>
     [HttpPost("login")]
+    [ProducesResponseType(typeof(LoginResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login(LoginDto dto)
     {
         var user = await _authService.LoginAsync(dto);
