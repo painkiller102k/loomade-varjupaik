@@ -53,6 +53,38 @@ namespace Varjupaik.Services.Data.Migrations
                     b.ToTable("Animals");
                 });
 
+            modelBuilder.Entity("Varjupaik.Services.Models.Application", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AnimalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ApplicantUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimalId");
+
+                    b.HasIndex("ApplicantUserId");
+
+                    b.ToTable("Applications");
+                });
+
             modelBuilder.Entity("Varjupaik.Services.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -81,6 +113,25 @@ namespace Varjupaik.Services.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Varjupaik.Services.Models.Application", b =>
+                {
+                    b.HasOne("Varjupaik.Services.Models.Animal", "Animal")
+                        .WithMany()
+                        .HasForeignKey("AnimalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Varjupaik.Services.Models.User", "ApplicantUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicantUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Animal");
+
+                    b.Navigation("ApplicantUser");
                 });
 #pragma warning restore 612, 618
         }
