@@ -33,7 +33,13 @@ async function request(path, options = {}) {
   const token = getToken()
   if (token) headers.Authorization = 'Bearer ' + token
 
-  const response = await fetch(API_URL + path, { ...options, headers })
+  let response
+  try {
+    response = await fetch(API_URL + path, { ...options, headers })
+  } catch {
+    // API ei ole käivitatud või aadress on vale
+    throw new Error('Serveriga ei saa ühendust. Kontrolli, et API töötab (' + API_URL + ').')
+  }
   if (!response.ok) {
     throw new Error(await errorMessage(response))
   }
