@@ -44,6 +44,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization();
 
+// CORS: lubame päringud Reacti kliendilt (Vite dev server)
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 // Swagger koos XML kommentaaride ja JWT Authorize nupuga
@@ -100,6 +110,8 @@ app.UseHttpsRedirection();
 // Veebileht ja pildid wwwroot kaustast
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+app.UseCors("Frontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
