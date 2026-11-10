@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Varjupaik.Api/Varjupaik.Api.csproj" />
   <Project Path="Varjupaik.Services/Varjupaik.Services.csproj" />
+  <Project Path="Varjupaik.Tests/Varjupaik.Tests.csproj" />
   <Project Path="Varjupaik.Worker/Varjupaik.Worker.csproj" />
 </Solution>
