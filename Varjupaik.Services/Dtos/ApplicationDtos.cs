@@ -5,7 +5,9 @@ namespace Varjupaik.Services.Dtos;
 
 public class ApplicationCreateDto
 {
-    [Required, MaxLength(1000)]
+    /// <summary>Miks soovid looma adopteerida</summary>
+    /// <example>Mul on suur aed ja palju aega koeraga jalutamiseks.</example>
+    [Required, MinLength(10), MaxLength(1000)]
     public string Message { get; set; } = "";
 }
 
