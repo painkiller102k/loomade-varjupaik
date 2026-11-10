@@ -1,23 +1,23 @@
 using Microsoft.EntityFrameworkCore;
-using Varjupaik.Services.Data;
 using Varjupaik.Services.Dtos;
 using Varjupaik.Services.Models;
+using Varjupaik.Services.Repositories;
 
 namespace Varjupaik.Services;
 
 public class AnimalService
 {
-    private readonly AppDbContext _db;
+    private readonly IAnimalRepository _animals;
 
-    public AnimalService(AppDbContext db)
+    public AnimalService(IAnimalRepository animals)
     {
-        _db = db;
+        _animals = animals;
     }
 
     // Avalik nimekiri, filtrid on valikulised
     public async Task<List<AnimalDto>> GetAllAsync(string? species, AnimalStatus? status)
     {
-        var query = _db.Animals.AsQueryable();
+        var query = _animals.Query();
 
         if (!string.IsNullOrWhiteSpace(species))
         {
@@ -36,7 +36,7 @@ public class AnimalService
 
     public async Task<AnimalDto?> GetByIdAsync(int id)
     {
-        var animal = await _db.Animals.FindAsync(id);
+        var animal = await _animals.GetByIdAsync(id);
         return animal == null ? null : AnimalDto.FromAnimal(animal);
     }
 
@@ -52,14 +52,13 @@ public class AnimalService
             PhotoPath = photoPath
         };
 
-        _db.Animals.Add(animal);
-        await _db.SaveChangesAsync();
+        await _animals.AddAsync(animal);
         return AnimalDto.FromAnimal(animal);
     }
 
     public async Task<AnimalDto?> UpdateAsync(int id, AnimalSaveDto dto, string? photoPath)
     {
-        var animal = await _db.Animals.FindAsync(id);
+        var animal = await _animals.GetByIdAsync(id);
         if (animal == null)
         {
             return null;
@@ -77,20 +76,19 @@ public class AnimalService
             animal.PhotoPath = photoPath;
         }
 
-        await _db.SaveChangesAsync();
+        await _animals.UpdateAsync(animal);
         return AnimalDto.FromAnimal(animal);
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var animal = await _db.Animals.FindAsync(id);
+        var animal = await _animals.GetByIdAsync(id);
         if (animal == null)
         {
             return false;
         }
 
-        _db.Animals.Remove(animal);
-        await _db.SaveChangesAsync();
+        await _animals.DeleteAsync(animal);
         return true;
     }
 }
