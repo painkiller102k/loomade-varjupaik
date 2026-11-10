@@ -1,26 +1,25 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Varjupaik.Services.Data;
 using Varjupaik.Services.Dtos;
 using Varjupaik.Services.Models;
+using Varjupaik.Services.Repositories;
 
 namespace Varjupaik.Services;
 
 public class AuthService
 {
-    private readonly AppDbContext _db;
+    private readonly IUserRepository _users;
     private readonly PasswordHasher<User> _hasher = new();
 
-    public AuthService(AppDbContext db)
+    public AuthService(IUserRepository users)
     {
-        _db = db;
+        _users = users;
     }
 
     // Uus kasutaja saab alati rolli Visitor
     public async Task<User?> RegisterAsync(RegisterDto dto)
     {
         var email = dto.Email.Trim().ToLower();
-        if (await _db.Users.AnyAsync(u => u.Email == email))
+        if (await _users.EmailExistsAsync(email))
         {
             return null;
         }
@@ -33,8 +32,7 @@ public class AuthService
         };
         user.PasswordHash = _hasher.HashPassword(user, dto.Password);
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
+        await _users.AddAsync(user);
         return user;
     }
 
@@ -42,7 +40,7 @@ public class AuthService
     public async Task<User?> LoginAsync(LoginDto dto)
     {
         var email = dto.Email.Trim().ToLower();
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _users.GetByEmailAsync(email);
         if (user == null)
         {
             return null;

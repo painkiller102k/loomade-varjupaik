@@ -5,12 +5,18 @@ using Microsoft.IdentityModel.Tokens;
 using Varjupaik.Api.Auth;
 using Varjupaik.Services;
 using Varjupaik.Services.Data;
+using Varjupaik.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Andmebaas (SQLite)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
+
+// Repositooriumid
+builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
+builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Teenused
 builder.Services.AddScoped<AuthService>();
