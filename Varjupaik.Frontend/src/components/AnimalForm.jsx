@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { photoUrl } from '../api'
 import { speciesList } from '../helpers'
 
@@ -6,30 +6,14 @@ const empty = { name: '', species: '', age: 0, description: '', status: 'Availab
 
 // Vorm looma lisamiseks ja muutmiseks
 function AnimalForm({ animal, onSave, onCancel }) {
-  const [form, setForm] = useState(empty)
+  // Kui muudame looma, täidame vormi tema andmetega (AdminPage annab key, et vorm uueneks)
+  const [form, setForm] = useState(animal
+    ? { name: animal.name, species: animal.species, age: animal.age, description: animal.description, status: animal.status }
+    : empty)
   const [photo, setPhoto] = useState(null)
-  const [preview, setPreview] = useState(null)
+  const [preview, setPreview] = useState(animal ? photoUrl(animal.photoUrl) : null)
   const [errors, setErrors] = useState({})
   const [sending, setSending] = useState(false)
-
-  // Kui valitakse muudetav loom, täidame vormi
-  useEffect(() => {
-    if (animal) {
-      setForm({
-        name: animal.name,
-        species: animal.species,
-        age: animal.age,
-        description: animal.description,
-        status: animal.status,
-      })
-      setPreview(photoUrl(animal.photoUrl))
-    } else {
-      setForm(empty)
-      setPreview(null)
-    }
-    setPhoto(null)
-    setErrors({})
-  }, [animal])
 
   function update(name, value) {
     setForm({ ...form, [name]: value })

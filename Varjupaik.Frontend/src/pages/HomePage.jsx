@@ -4,6 +4,8 @@ import AnimalCard from '../components/AnimalCard'
 import AnimalFilters from '../components/AnimalFilters'
 import ApplyModal from '../components/ApplyModal'
 import Pagination from '../components/Pagination'
+import Hero from '../components/Hero'
+import HowTo from '../components/HowTo'
 
 function HomePage() {
   const [filters, setFilters] = useState({
@@ -40,6 +42,9 @@ function HomePage() {
   }
 
   return (
+    <>
+    <Hero />
+    <HowTo />
     <section id="loomad" className="container section">
       <div className="section-head">
         <h2>Meie hoolealused</h2>
@@ -71,6 +76,7 @@ function HomePage() {
 
       {selected && <ApplyModal animal={selected} onClose={() => setSelected(null)} />}
     </section>
+    </>
   )
 }
 
