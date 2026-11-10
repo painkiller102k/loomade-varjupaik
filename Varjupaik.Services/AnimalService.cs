@@ -14,24 +14,49 @@ public class AnimalService
         _animals = animals;
     }
 
-    // Avalik nimekiri, filtrid on valikulised
-    public async Task<List<AnimalDto>> GetAllAsync(string? species, AnimalStatus? status)
+    // Avalik nimekiri: filtrid, otsing, sorteerimine ja leheküljed
+    public async Task<PagedResult<AnimalDto>> GetAllAsync(AnimalQuery q)
     {
         var query = _animals.Query();
 
-        if (!string.IsNullOrWhiteSpace(species))
+        if (!string.IsNullOrWhiteSpace(q.Species))
         {
-            var s = species.Trim().ToLower();
-            query = query.Where(a => a.Species.ToLower() == s);
+            var species = q.Species.Trim().ToLower();
+            query = query.Where(a => a.Species.ToLower() == species);
         }
 
-        if (status != null)
+        if (q.Status != null)
         {
-            query = query.Where(a => a.Status == status);
+            query = query.Where(a => a.Status == q.Status);
         }
 
-        var animals = await query.OrderByDescending(a => a.CreatedAt).ToListAsync();
-        return animals.Select(AnimalDto.FromAnimal).ToList();
+        if (!string.IsNullOrWhiteSpace(q.Search))
+        {
+            var search = q.Search.Trim().ToLower();
+            query = query.Where(a => a.Name.ToLower().Contains(search) || a.Description.ToLower().Contains(search));
+        }
+
+        query = q.SortBy switch
+        {
+            "name" => query.OrderBy(a => a.Name),
+            "age" => query.OrderBy(a => a.Age),
+            "oldest" => query.OrderBy(a => a.CreatedAt),
+            _ => query.OrderByDescending(a => a.CreatedAt)
+        };
+
+        var page = q.Page < 1 ? 1 : q.Page;
+        var pageSize = q.PageSize < 1 ? 9 : Math.Min(q.PageSize, 50);
+
+        var totalCount = await query.CountAsync();
+        var animals = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<AnimalDto>
+        {
+            Items = animals.Select(AnimalDto.FromAnimal).ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<AnimalDto?> GetByIdAsync(int id)
