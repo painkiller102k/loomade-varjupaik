@@ -1,6 +1,7 @@
 @Varjupaik.Api_HostAddress = http://localhost:5156
 
-GET {{Varjupaik.Api_HostAddress}}/weatherforecast/
+### Avalik loomade nimekiri
+GET {{Varjupaik.Api_HostAddress}}/api/animals
 Accept: application/json
 
 ###
