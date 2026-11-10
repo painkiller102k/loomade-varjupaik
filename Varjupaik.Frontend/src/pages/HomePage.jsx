@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { api } from '../api'
 import AnimalCard from '../components/AnimalCard'
 import AnimalFilters from '../components/AnimalFilters'
+import ApplyModal from '../components/ApplyModal'
 import Pagination from '../components/Pagination'
 
 function HomePage() {
@@ -16,6 +17,7 @@ function HomePage() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [selected, setSelected] = useState(null)
 
   // Laeme loomad iga kord, kui filtrid muutuvad (otsingule väike viivitus)
   useEffect(() => {
@@ -58,7 +60,7 @@ function HomePage() {
       ) : (
         <div className={'animal-grid' + (loading ? ' loading' : '')}>
           {result && result.items.map((animal) => (
-            <AnimalCard key={animal.id} animal={animal} />
+            <AnimalCard key={animal.id} animal={animal} onApply={setSelected} />
           ))}
         </div>
       )}
@@ -66,6 +68,8 @@ function HomePage() {
       {result && (
         <Pagination page={result.page} totalPages={result.totalPages} onChange={changePage} />
       )}
+
+      {selected && <ApplyModal animal={selected} onClose={() => setSelected(null)} />}
     </section>
   )
 }
