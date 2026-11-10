@@ -51,8 +51,8 @@
     let editId = null;
 
     async function loadAnimals() {
-        const response = await fetch("/api/animals");
-        const animals = await response.json();
+        const response = await fetch("/api/animals?pageSize=50");
+        const animals = (await response.json()).items;
         const container = document.getElementById("animals");
         container.innerHTML = "";
 
