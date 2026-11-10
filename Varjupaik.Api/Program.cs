@@ -44,6 +44,9 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+
+    var seedUsers = builder.Configuration.GetSection("SeedUsers").Get<List<SeedUser>>() ?? new();
+    DbSeeder.SeedUsers(db, seedUsers);
 }
 
 if (app.Environment.IsDevelopment())
