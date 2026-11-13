@@ -115,6 +115,63 @@ namespace Varjupaik.Services.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Varjupaik.Services.Models.Vaccination", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AnimalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("NextDueDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("VaccinationDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimalId");
+
+                    b.ToTable("Vaccinations");
+                });
+
+            modelBuilder.Entity("Varjupaik.Services.Models.VetVisit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AnimalId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Vet")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("VisitDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimalId");
+
+                    b.ToTable("VetVisits");
+                });
+
             modelBuilder.Entity("Varjupaik.Services.Models.Application", b =>
                 {
                     b.HasOne("Varjupaik.Services.Models.Animal", "Animal")
@@ -132,6 +189,28 @@ namespace Varjupaik.Services.Data.Migrations
                     b.Navigation("Animal");
 
                     b.Navigation("ApplicantUser");
+                });
+
+            modelBuilder.Entity("Varjupaik.Services.Models.Vaccination", b =>
+                {
+                    b.HasOne("Varjupaik.Services.Models.Animal", "Animal")
+                        .WithMany()
+                        .HasForeignKey("AnimalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Animal");
+                });
+
+            modelBuilder.Entity("Varjupaik.Services.Models.VetVisit", b =>
+                {
+                    b.HasOne("Varjupaik.Services.Models.Animal", "Animal")
+                        .WithMany()
+                        .HasForeignKey("AnimalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Animal");
                 });
 #pragma warning restore 612, 618
         }
