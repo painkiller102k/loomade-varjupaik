@@ -1235,3 +1235,60 @@ select {
   background: var(--cream);
   border-radius: 12px;
 }
+
+/* ===== Reaalajas teade ===== */
+.live-toast {
+  position: fixed;
+  top: 84px;
+  right: 16px;
+  z-index: 70;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 340px;
+  padding: 14px 16px;
+  background: white;
+  border-left: 5px solid var(--accent);
+  border-radius: 16px;
+  box-shadow: var(--shadow-hover);
+  animation: slide-in 0.35s ease-out;
+}
+
+.live-toast strong {
+  color: var(--green-900);
+}
+
+.live-toast p {
+  margin: 2px 0 6px;
+}
+
+.live-toast a {
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.live-icon {
+  font-size: 26px;
+  animation: ring 1.2s ease-in-out 2;
+}
+
+.live-close {
+  border: none;
+  background: var(--cream);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(40px); }
+}
+
+@keyframes ring {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-18deg); }
+  75% { transform: rotate(18deg); }
+}
