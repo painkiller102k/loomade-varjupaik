@@ -35,10 +35,6 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register(RegisterDto dto)
     {
         var user = await _authService.RegisterAsync(dto);
-        if (user == null)
-        {
-            return BadRequest(new { message = "Selle emailiga kasutaja on juba olemas" });
-        }
 
         return Ok(new LoginResultDto
         {
@@ -60,10 +56,6 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login(LoginDto dto)
     {
         var user = await _authService.LoginAsync(dto);
-        if (user == null)
-        {
-            return Unauthorized(new { message = "Vale email või parool" });
-        }
 
         return Ok(new LoginResultDto
         {

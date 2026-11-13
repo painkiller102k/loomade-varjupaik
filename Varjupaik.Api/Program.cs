@@ -1,10 +1,13 @@
 using System.Text.Json.Serialization;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Varjupaik.Api.Auth;
+using Varjupaik.Api.ErrorHandling;
 using Varjupaik.Services;
 using Varjupaik.Services.Data;
 using Varjupaik.Services.Repositories;
@@ -56,8 +59,28 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+// Ühtne veakäsitlus: kõik vead tagastatakse ProblemDetails kujul
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddControllers()
-    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Vigased andmed (valideerimine) tagastatakse samuti application/problem+json kujul
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var factory = context.HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
+            var problem = factory.CreateValidationProblemDetails(context.HttpContext, context.ModelState);
+            return new ContentResult
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                ContentType = "application/problem+json",
+                Content = System.Text.Json.JsonSerializer.Serialize(problem, new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web))
+            };
+        };
+    });
+
 // Swagger koos XML kommentaaride ja JWT Authorize nupuga
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -101,6 +124,10 @@ using (var scope = app.Services.CreateScope())
     DbSeeder.SeedAnimals(db);
     DbSeeder.SeedVetData(db);
 }
+
+// Erandid -> ProblemDetails; tühjad 401/403/404 vastused saavad samuti ProblemDetails sisu
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 if (app.Environment.IsDevelopment())
 {

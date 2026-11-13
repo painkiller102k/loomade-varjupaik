@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Varjupaik.Services;
 using Varjupaik.Services.Dtos;
+using Varjupaik.Services.Exceptions;
 
 namespace Varjupaik.Api.Controllers;
 
@@ -52,10 +53,6 @@ public class AnimalsController : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var animal = await _animalService.GetByIdAsync(id);
-        if (animal == null)
-        {
-            return NotFound();
-        }
         return Ok(animal);
     }
 
@@ -77,7 +74,7 @@ public class AnimalsController : ControllerBase
         var photoPath = await SavePhoto(photo);
         if (photo != null && photoPath == null)
         {
-            return BadRequest(new { message = "Lubatud on ainult pildifailid (jpg, png, gif, webp)" });
+            throw new BadRequestException("Lubatud on ainult pildifailid (jpg, png, gif, webp)");
         }
 
         var animal = await _animalService.CreateAsync(dto, photoPath);
@@ -101,14 +98,10 @@ public class AnimalsController : ControllerBase
         var photoPath = await SavePhoto(photo);
         if (photo != null && photoPath == null)
         {
-            return BadRequest(new { message = "Lubatud on ainult pildifailid (jpg, png, gif, webp)" });
+            throw new BadRequestException("Lubatud on ainult pildifailid (jpg, png, gif, webp)");
         }
 
         var animal = await _animalService.UpdateAsync(id, dto, photoPath);
-        if (animal == null)
-        {
-            return NotFound();
-        }
         return Ok(animal);
     }
 
@@ -123,11 +116,7 @@ public class AnimalsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await _animalService.DeleteAsync(id);
-        if (!deleted)
-        {
-            return NotFound();
-        }
+        await _animalService.DeleteAsync(id);
         return NoContent();
     }
 
