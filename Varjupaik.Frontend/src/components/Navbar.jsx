@@ -3,7 +3,7 @@ import { useAuth } from '../AuthContext'
 import Logo from './Logo'
 
 function Navbar() {
-  const { user, logout, isStaff } = useAuth()
+  const { user, logout, isStaff, isVisitor } = useAuth()
   const navigate = useNavigate()
 
   function handleLogout() {
@@ -21,7 +21,9 @@ function Navbar() {
 
         <nav className="nav-links">
           <NavLink to="/" end>Loomad</NavLink>
+          {isStaff && <NavLink to="/taotlused">Taotlused</NavLink>}
           {isStaff && <NavLink to="/haldus">Haldus</NavLink>}
+          {isVisitor && <NavLink to="/minu-taotlused">Minu taotlused</NavLink>}
 
           {user ? (
             <>
