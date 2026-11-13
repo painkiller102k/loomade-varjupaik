@@ -3,6 +3,7 @@ import { AuthProvider } from './AuthContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
+import LiveNotifications from './LiveNotifications'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -17,6 +18,7 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <Navbar />
+        <LiveNotifications />
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />

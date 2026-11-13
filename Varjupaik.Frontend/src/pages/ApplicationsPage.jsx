@@ -34,6 +34,15 @@ function ApplicationsPage() {
     }
   }, [status, reload, isStaff])
 
+  // Uus taotlus tuli WebSocketi kaudu: laeme nimekirja uuesti
+  useEffect(() => {
+    function onReceived() {
+      setReload((r) => r + 1)
+    }
+    window.addEventListener('application-received', onReceived)
+    return () => window.removeEventListener('application-received', onReceived)
+  }, [])
+
   if (!isStaff) {
     return <Navigate to="/login" />
   }
