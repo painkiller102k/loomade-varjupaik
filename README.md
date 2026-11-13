@@ -107,6 +107,8 @@ A **Visitor** account can be created on the "Registreeru" (register) page.
 | POST | `/api/animals/{id}/applications` | Visitor | Submit an adoption application (animal becomes `Reserved`) |
 | GET | `/api/applications?status=` | Admin, Staff | List applications, optional filter by status |
 | GET | `/api/applications/my` | Visitor | The visitor's own applications |
+| GET | `/api/animals/{id}/vet-visits` | Admin, Staff | Vet visit history of an animal, newest first |
+| POST | `/api/animals/{id}/vet-visits` | Admin, Staff | Add a vet visit |
 | PATCH | `/api/applications/{id}/status` | Admin, Staff | Approve or reject an application; the animal status changes in the same transaction |
 
 `sortBy` values: `newest` (default), `oldest`, `name`, `age`.
@@ -129,6 +131,10 @@ All requests can be tested with [`Varjupaik.Api/Varjupaik.Api.http`](Varjupaik.A
 - **User** – Id, Email, Name, PasswordHash, Role
 - **Animal** – Id, Name, Species, Age, Description, PhotoPath, Status (`Available`, `Reserved`, `Adopted`), CreatedAt
 - **Application** – Id, AnimalId, ApplicantUserId, Message, Status (`New`, `Approved`, `Rejected`), CreatedAt
+- **VetVisit** – Id, AnimalId, VisitDate, Reason, Notes, Vet
+- **Vaccination** – Id, AnimalId, Name, VaccinationDate, NextDueDate
+
+Deleting an animal also deletes its vet visits and vaccinations.
 
 ## Branches
 

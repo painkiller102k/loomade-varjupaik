@@ -180,3 +180,29 @@ Content-Type: application/json
 {
   "status": "Approved"
 }
+
+### 22. Looma veterinaarivisiitide ajalugu (Staff)
+GET {{host}}/api/animals/1/vet-visits
+Authorization: Bearer {{staffToken}}
+
+### 23. Lisa veterinaarivisiit (Staff)
+POST {{host}}/api/animals/1/vet-visits
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "visitDate": "2026-11-12",
+  "reason": "Kontroll",
+  "notes": "Kõik korras.",
+  "vet": "Dr. Tamm"
+}
+
+### 24. Visiit ilma põhjuseta (400)
+POST {{host}}/api/animals/1/vet-visits
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "visitDate": "2026-11-12",
+  "vet": "Dr. Tamm"
+}

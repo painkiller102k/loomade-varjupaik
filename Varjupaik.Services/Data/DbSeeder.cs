@@ -31,6 +31,42 @@ public static class DbSeeder
         db.SaveChanges();
     }
 
+    // Algandmed: veterinaarivisiidid ja vaktsineerimised mõnele loomale
+    public static void SeedVetData(AppDbContext db)
+    {
+        if (db.VetVisits.Any() || db.Vaccinations.Any())
+        {
+            return;
+        }
+
+        var today = DateTime.UtcNow.Date;
+        var muri = db.Animals.FirstOrDefault(a => a.Name == "Muri");
+        var miisu = db.Animals.FirstOrDefault(a => a.Name == "Miisu");
+        var reks = db.Animals.FirstOrDefault(a => a.Name == "Reks");
+
+        if (muri != null)
+        {
+            db.VetVisits.Add(new VetVisit { AnimalId = muri.Id, VisitDate = today.AddDays(-30), Reason = "Esmane läbivaatus", Notes = "Terve, kaal normis.", Vet = "Dr. Tamm" });
+            db.VetVisits.Add(new VetVisit { AnimalId = muri.Id, VisitDate = today.AddDays(-10), Reason = "Marutaudi vaktsiin", Notes = "Reaktsioone ei olnud.", Vet = "Dr. Tamm" });
+            db.Vaccinations.Add(new Vaccination { AnimalId = muri.Id, Name = "Marutaudi", VaccinationDate = today.AddDays(-10), NextDueDate = today.AddDays(355) });
+            db.Vaccinations.Add(new Vaccination { AnimalId = muri.Id, Name = "Leetospiroos", VaccinationDate = today.AddDays(-350), NextDueDate = today.AddDays(5) });
+        }
+
+        if (miisu != null)
+        {
+            db.VetVisits.Add(new VetVisit { AnimalId = miisu.Id, VisitDate = today.AddDays(-20), Reason = "Steriliseerimine", Notes = "Operatsioon õnnestus, paranemine hea.", Vet = "Dr. Kask" });
+            db.Vaccinations.Add(new Vaccination { AnimalId = miisu.Id, Name = "Kassikatk", VaccinationDate = today.AddDays(-358), NextDueDate = today.AddDays(7) });
+        }
+
+        if (reks != null)
+        {
+            db.VetVisits.Add(new VetVisit { AnimalId = reks.Id, VisitDate = today.AddDays(-45), Reason = "Hammaste kontroll", Notes = "Hambakivi eemaldati.", Vet = "Dr. Kask" });
+            db.Vaccinations.Add(new Vaccination { AnimalId = reks.Id, Name = "Kompleksvaktsiin", VaccinationDate = today.AddDays(-300), NextDueDate = today.AddDays(65) });
+        }
+
+        db.SaveChanges();
+    }
+
     // Algandmed: mõned loomad, et nimekiri poleks tühi
     public static void SeedAnimals(AppDbContext db)
     {
