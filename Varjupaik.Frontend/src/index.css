@@ -1178,3 +1178,60 @@ select {
 .app-New { background: #fff1d6; color: #9a6410; }
 .app-Approved { background: var(--green-light); color: var(--green); }
 .app-Rejected { background: #fde4df; color: #a12f15; }
+
+/* ===== Veterinaarivisiidid ===== */
+.back-link {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.list-title {
+  margin: 0 0 16px;
+  color: var(--green-900);
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 18px;
+  border-left: 3px solid var(--green-light);
+}
+
+.timeline li {
+  position: relative;
+  padding: 0 0 22px 18px;
+}
+
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid white;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.timeline-date {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent-dark);
+}
+
+.timeline-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline-body p {
+  margin: 6px 0 0;
+  padding: 10px 14px;
+  background: var(--cream);
+  border-radius: 12px;
+}
