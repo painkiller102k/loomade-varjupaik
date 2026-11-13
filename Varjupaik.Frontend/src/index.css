@@ -1118,3 +1118,63 @@ select {
     transition: none !important;
   }
 }
+
+/* ===== Taotlused ===== */
+.application-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.application-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+
+.application-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.application-top h3 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--green-900);
+}
+
+.application-top p {
+  margin: 2px 0 0;
+}
+
+.application-message {
+  margin: 14px 0;
+  padding: 12px 16px;
+  background: var(--cream);
+  border-left: 4px solid var(--sun);
+  border-radius: 0 12px 12px 0;
+  font-style: italic;
+}
+
+.application-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-status {
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.app-New { background: #fff1d6; color: #9a6410; }
+.app-Approved { background: var(--green-light); color: var(--green); }
+.app-Rejected { background: #fde4df; color: #a12f15; }
