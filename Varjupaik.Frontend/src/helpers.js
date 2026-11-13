@@ -23,3 +23,19 @@ export function ageText(age) {
   if (age === 1) return '1 aasta'
   return age + ' aastat'
 }
+
+export const applicationStatusNames = {
+  New: 'Ootel',
+  Approved: 'Kinnitatud',
+  Rejected: 'Tagasi lükatud',
+}
+
+export function dateText(value) {
+  return new Date(value).toLocaleString('et-EE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
