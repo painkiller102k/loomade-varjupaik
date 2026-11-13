@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Varjupaik.Services.Dtos;
 using Varjupaik.Services.Exceptions;
 using Varjupaik.Services.Models;
+using Varjupaik.Services.Notifications;
 using Varjupaik.Services.Repositories;
 
 namespace Varjupaik.Services;
@@ -10,12 +11,15 @@ public class ApplicationService
 {
     private readonly IApplicationRepository _applications;
     private readonly IAnimalRepository _animals;
+    private readonly IApplicationNotifier _notifier;
     private readonly ILogger<ApplicationService> _logger;
 
-    public ApplicationService(IApplicationRepository applications, IAnimalRepository animals, ILogger<ApplicationService> logger)
+    public ApplicationService(IApplicationRepository applications, IAnimalRepository animals,
+        IApplicationNotifier notifier, ILogger<ApplicationService> logger)
     {
         _applications = applications;
         _animals = animals;
+        _notifier = notifier;
         _logger = logger;
     }
 
@@ -51,7 +55,26 @@ public class ApplicationService
 
         await _applications.SaveChangesAsync();
         _logger.LogInformation("Uus taotlus {ApplicationId}: kasutaja {UserId}, loom {AnimalId}", application.Id, userId, animalId);
+
+        await NotifyStaffAsync(application.Id);
         return ApplicationDto.FromApplication(application);
+    }
+
+    // Teavitab töötajaid pärast salvestamist. Teavituse viga ei tohi taotlust ebaõnnestuda.
+    private async Task NotifyStaffAsync(int applicationId)
+    {
+        try
+        {
+            var saved = await _applications.GetByIdAsync(applicationId);
+            if (saved != null)
+            {
+                await _notifier.ApplicationReceivedAsync(ApplicationListDto.FromApplication(saved));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Töötajate teavitamine taotlusest {ApplicationId} ebaõnnestus", applicationId);
+        }
     }
 
     // Kõik taotlused töötajatele, valikuline filter oleku järgi

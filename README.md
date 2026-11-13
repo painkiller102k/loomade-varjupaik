@@ -115,8 +115,23 @@ A **Visitor** account can be created on the "Registreeru" (register) page.
 
 Status codes used: `200`, `201`, `204`, `400`, `401`, `403`, `404`.
 
+All errors are returned as `application/problem+json` (ProblemDetails) by one global exception handler, and
+important events (logins, applications, status changes, errors) are logged with `ILogger`.
+
 All requests can be tested with [`Varjupaik.Api/Varjupaik.Api.http`](Varjupaik.Api/Varjupaik.Api.http) or in Swagger
 (use the **Authorize** button with the token from `/api/auth/login`).
+
+## Real-time notifications (WebSocket)
+
+Staff see new applications immediately. Connect to `ws://localhost:5156/ws/applications?access_token=<JWT>`
+(browsers cannot send an `Authorization` header over WebSocket, so the token goes in the query string).
+Only `Admin` and `Staff` may connect; others get `401` / `403`.
+
+After a visitor's application is saved, the services layer sends this message to every connected staff member:
+
+```json
+{ "type": "ApplicationReceived", "data": { "id": 1, "animalName": "Reks", "applicantName": "Mari", "status": "New" }, "sentAt": "..." }
+```
 
 ## Application processing
 

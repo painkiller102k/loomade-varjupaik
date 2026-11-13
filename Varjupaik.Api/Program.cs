@@ -8,8 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Varjupaik.Api.Auth;
 using Varjupaik.Api.ErrorHandling;
+using Varjupaik.Api.WebSockets;
 using Varjupaik.Services;
 using Varjupaik.Services.Data;
+using Varjupaik.Services.Notifications;
 using Varjupaik.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVetVisitRepository, VetVisitRepository>();
 
 // Teenused
+// Reaalajas teavitused (WebSocket)
+builder.Services.AddSingleton<WebSocketConnectionManager>();
+builder.Services.AddSingleton<IApplicationNotifier, WebSocketApplicationNotifier>();
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AnimalService>();
 builder.Services.AddScoped<ApplicationService>();
@@ -35,6 +41,20 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        // Brauseri WebSocket ei saa Authorization päist saata, seega loeme tokeni query-parameetrist
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(token) && context.HttpContext.Request.Path.StartsWithSegments("/ws"))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            }
+        };
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -141,10 +161,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseCors("Frontend");
+app.UseWebSockets();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapApplicationsSocket();
 
 app.Run();
