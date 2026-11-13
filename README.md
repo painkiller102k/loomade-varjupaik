@@ -104,7 +104,10 @@ A **Visitor** account can be created on the "Registreeru" (register) page.
 | POST | `/api/animals` | Admin, Staff | Add an animal (multipart/form-data, optional photo) |
 | PUT | `/api/animals/{id}` | Admin, Staff | Update an animal |
 | DELETE | `/api/animals/{id}` | Admin, Staff | Delete an animal |
-| POST | `/api/animals/{id}/applications` | Visitor | Submit an adoption application |
+| POST | `/api/animals/{id}/applications` | Visitor | Submit an adoption application (animal becomes `Reserved`) |
+| GET | `/api/applications?status=` | Admin, Staff | List applications, optional filter by status |
+| GET | `/api/applications/my` | Visitor | The visitor's own applications |
+| PATCH | `/api/applications/{id}/status` | Admin, Staff | Approve or reject an application; the animal status changes in the same transaction |
 
 `sortBy` values: `newest` (default), `oldest`, `name`, `age`.
 
@@ -112,6 +115,14 @@ Status codes used: `200`, `201`, `204`, `400`, `401`, `403`, `404`.
 
 All requests can be tested with [`Varjupaik.Api/Varjupaik.Api.http`](Varjupaik.Api/Varjupaik.Api.http) or in Swagger
 (use the **Authorize** button with the token from `/api/auth/login`).
+
+## Application processing
+
+`New` → `Approved` or `Rejected`. The animal status changes automatically, in the same transaction:
+
+- a new application: `Available` → `Reserved`
+- an application is approved: the animal becomes `Adopted` and all other new applications for it are rejected
+- an application is rejected and no other new applications exist: `Reserved` → `Available`
 
 ## Data model
 
