@@ -37,10 +37,6 @@ public class VetVisitsController : ControllerBase
     public async Task<IActionResult> GetHistory(int id)
     {
         var visits = await _vetVisitService.GetHistoryAsync(id);
-        if (visits == null)
-        {
-            return NotFound(new { message = "Looma ei leitud" });
-        }
         return Ok(visits);
     }
 
@@ -63,11 +59,6 @@ public class VetVisitsController : ControllerBase
     public async Task<IActionResult> Add(int id, VetVisitCreateDto dto)
     {
         var visit = await _vetVisitService.AddAsync(id, dto);
-        if (visit == null)
-        {
-            return NotFound(new { message = "Looma ei leitud" });
-        }
-
         return CreatedAtAction(nameof(GetHistory), new { id }, visit);
     }
 }

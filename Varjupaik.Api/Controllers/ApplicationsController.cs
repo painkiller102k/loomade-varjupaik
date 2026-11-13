@@ -42,16 +42,7 @@ public class ApplicationsController : ControllerBase
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        var (application, error) = await _applicationService.CreateAsync(id, userId, dto);
-        if (error == "Looma ei leitud")
-        {
-            return NotFound(new { message = error });
-        }
-        if (error != null)
-        {
-            return BadRequest(new { message = error });
-        }
-
+        var application = await _applicationService.CreateAsync(id, userId, dto);
         return StatusCode(StatusCodes.Status201Created, application);
     }
 
@@ -115,16 +106,7 @@ public class ApplicationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ChangeStatus(int id, ApplicationStatusDto dto)
     {
-        var (application, error, notFound) = await _applicationService.ChangeStatusAsync(id, dto.Status);
-        if (notFound)
-        {
-            return NotFound(new { message = error });
-        }
-        if (error != null)
-        {
-            return BadRequest(new { message = error });
-        }
-
+        var application = await _applicationService.ChangeStatusAsync(id, dto.Status);
         return Ok(application);
     }
 }

@@ -1,12 +1,17 @@
 using System.Text.Json.Serialization;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Varjupaik.Api.Auth;
+using Varjupaik.Api.ErrorHandling;
+using Varjupaik.Api.WebSockets;
 using Varjupaik.Services;
 using Varjupaik.Services.Data;
+using Varjupaik.Services.Notifications;
 using Varjupaik.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +27,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVetVisitRepository, VetVisitRepository>();
 
 // Teenused
+// Reaalajas teavitused (WebSocket)
+builder.Services.AddSingleton<WebSocketConnectionManager>();
+builder.Services.AddSingleton<IApplicationNotifier, WebSocketApplicationNotifier>();
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AnimalService>();
 builder.Services.AddScoped<ApplicationService>();
@@ -32,6 +41,20 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        // Brauseri WebSocket ei saa Authorization päist saata, seega loeme tokeni query-parameetrist
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(token) && context.HttpContext.Request.Path.StartsWithSegments("/ws"))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            }
+        };
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -56,8 +79,28 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+// Ühtne veakäsitlus: kõik vead tagastatakse ProblemDetails kujul
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddControllers()
-    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        // Vigased andmed (valideerimine) tagastatakse samuti application/problem+json kujul
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var factory = context.HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
+            var problem = factory.CreateValidationProblemDetails(context.HttpContext, context.ModelState);
+            return new ContentResult
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                ContentType = "application/problem+json",
+                Content = System.Text.Json.JsonSerializer.Serialize(problem, new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web))
+            };
+        };
+    });
+
 // Swagger koos XML kommentaaride ja JWT Authorize nupuga
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -102,6 +145,10 @@ using (var scope = app.Services.CreateScope())
     DbSeeder.SeedVetData(db);
 }
 
+// Erandid -> ProblemDetails; tühjad 401/403/404 vastused saavad samuti ProblemDetails sisu
+app.UseExceptionHandler();
+app.UseStatusCodePages();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -114,10 +161,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseCors("Frontend");
+app.UseWebSockets();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapApplicationsSocket();
 
 app.Run();

@@ -1,5 +1,8 @@
+using Microsoft.Extensions.Logging;
 using Varjupaik.Services.Dtos;
+using Varjupaik.Services.Exceptions;
 using Varjupaik.Services.Models;
+using Varjupaik.Services.Notifications;
 using Varjupaik.Services.Repositories;
 
 namespace Varjupaik.Services;
@@ -8,31 +11,31 @@ public class ApplicationService
 {
     private readonly IApplicationRepository _applications;
     private readonly IAnimalRepository _animals;
+    private readonly IApplicationNotifier _notifier;
+    private readonly ILogger<ApplicationService> _logger;
 
-    public ApplicationService(IApplicationRepository applications, IAnimalRepository animals)
+    public ApplicationService(IApplicationRepository applications, IAnimalRepository animals,
+        IApplicationNotifier notifier, ILogger<ApplicationService> logger)
     {
         _applications = applications;
         _animals = animals;
+        _notifier = notifier;
+        _logger = logger;
     }
 
-    // Tagastab (taotlus, veateade). Kui veateade pole null, siis taotlust ei loodud.
-    public async Task<(ApplicationDto? Application, string? Error)> CreateAsync(int animalId, int userId, ApplicationCreateDto dto)
+    public async Task<ApplicationDto> CreateAsync(int animalId, int userId, ApplicationCreateDto dto)
     {
-        var animal = await _animals.GetByIdAsync(animalId);
-        if (animal == null)
-        {
-            return (null, "Looma ei leitud");
-        }
+        var animal = await _animals.GetByIdAsync(animalId)
+            ?? throw new NotFoundException("Looma ei leitud");
 
         if (animal.Status == AnimalStatus.Adopted)
         {
-            return (null, "See loom on juba adopteeritud");
+            throw new BadRequestException("See loom on juba adopteeritud");
         }
 
-        var alreadyApplied = await _applications.HasNewApplicationAsync(animalId, userId);
-        if (alreadyApplied)
+        if (await _applications.HasNewApplicationAsync(animalId, userId))
         {
-            return (null, "Sul on sellele loomale juba taotlus esitatud");
+            throw new BadRequestException("Sul on sellele loomale juba taotlus esitatud");
         }
 
         var application = new Application
@@ -51,7 +54,27 @@ public class ApplicationService
         }
 
         await _applications.SaveChangesAsync();
-        return (ApplicationDto.FromApplication(application), null);
+        _logger.LogInformation("Uus taotlus {ApplicationId}: kasutaja {UserId}, loom {AnimalId}", application.Id, userId, animalId);
+
+        await NotifyStaffAsync(application.Id);
+        return ApplicationDto.FromApplication(application);
+    }
+
+    // Teavitab töötajaid pärast salvestamist. Teavituse viga ei tohi taotlust ebaõnnestuda.
+    private async Task NotifyStaffAsync(int applicationId)
+    {
+        try
+        {
+            var saved = await _applications.GetByIdAsync(applicationId);
+            if (saved != null)
+            {
+                await _notifier.ApplicationReceivedAsync(ApplicationListDto.FromApplication(saved));
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Töötajate teavitamine taotlusest {ApplicationId} ebaõnnestus", applicationId);
+        }
     }
 
     // Kõik taotlused töötajatele, valikuline filter oleku järgi
@@ -71,22 +94,19 @@ public class ApplicationService
     // Taotluse menetlemine. Looma olek muutub samas tehingus:
     //  - Approved: loom saab olekuks Adopted ja kõik teised uued taotlused sellele loomale lükatakse tagasi
     //  - Rejected: kui uusi taotlusi enam pole, muutub broneeritud loom jälle Available
-    public async Task<(ApplicationListDto? Application, string? Error, bool NotFound)> ChangeStatusAsync(int id, ApplicationStatus newStatus)
+    public async Task<ApplicationListDto> ChangeStatusAsync(int id, ApplicationStatus newStatus)
     {
-        var application = await _applications.GetByIdAsync(id);
-        if (application == null)
-        {
-            return (null, "Taotlust ei leitud", true);
-        }
+        var application = await _applications.GetByIdAsync(id)
+            ?? throw new NotFoundException("Taotlust ei leitud");
 
         if (newStatus == ApplicationStatus.New)
         {
-            return (null, "Olekuks saab valida ainult Approved või Rejected", false);
+            throw new BadRequestException("Olekuks saab valida ainult Approved või Rejected");
         }
 
         if (application.Status != ApplicationStatus.New)
         {
-            return (null, "See taotlus on juba menetletud", false);
+            throw new BadRequestException("See taotlus on juba menetletud");
         }
 
         var animal = application.Animal!;
@@ -111,6 +131,8 @@ public class ApplicationService
 
         // Taotluse, looma ja teiste taotluste muudatused salvestatakse korraga
         await _applications.SaveChangesAsync();
-        return (ApplicationListDto.FromApplication(application), null, false);
+        _logger.LogInformation("Taotlus {ApplicationId} muudeti olekusse {Status}, loom {AnimalId} on nüüd {AnimalStatus}",
+            application.Id, newStatus, animal.Id, animal.Status);
+        return ApplicationListDto.FromApplication(application);
     }
 }

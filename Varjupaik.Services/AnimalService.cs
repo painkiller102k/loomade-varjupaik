@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Varjupaik.Services.Dtos;
+using Varjupaik.Services.Exceptions;
 using Varjupaik.Services.Models;
 using Varjupaik.Services.Repositories;
 
@@ -8,10 +10,12 @@ namespace Varjupaik.Services;
 public class AnimalService
 {
     private readonly IAnimalRepository _animals;
+    private readonly ILogger<AnimalService> _logger;
 
-    public AnimalService(IAnimalRepository animals)
+    public AnimalService(IAnimalRepository animals, ILogger<AnimalService> logger)
     {
         _animals = animals;
+        _logger = logger;
     }
 
     // Avalik nimekiri: filtrid, otsing, sorteerimine ja leheküljed
@@ -59,10 +63,11 @@ public class AnimalService
         };
     }
 
-    public async Task<AnimalDto?> GetByIdAsync(int id)
+    public async Task<AnimalDto> GetByIdAsync(int id)
     {
-        var animal = await _animals.GetByIdAsync(id);
-        return animal == null ? null : AnimalDto.FromAnimal(animal);
+        var animal = await _animals.GetByIdAsync(id)
+            ?? throw new NotFoundException("Looma ei leitud");
+        return AnimalDto.FromAnimal(animal);
     }
 
     public async Task<AnimalDto> CreateAsync(AnimalSaveDto dto, string? photoPath)
@@ -78,16 +83,14 @@ public class AnimalService
         };
 
         await _animals.AddAsync(animal);
+        _logger.LogInformation("Loom lisati: {Name} ({Species}), id {AnimalId}", animal.Name, animal.Species, animal.Id);
         return AnimalDto.FromAnimal(animal);
     }
 
-    public async Task<AnimalDto?> UpdateAsync(int id, AnimalSaveDto dto, string? photoPath)
+    public async Task<AnimalDto> UpdateAsync(int id, AnimalSaveDto dto, string? photoPath)
     {
-        var animal = await _animals.GetByIdAsync(id);
-        if (animal == null)
-        {
-            return null;
-        }
+        var animal = await _animals.GetByIdAsync(id)
+            ?? throw new NotFoundException("Looma ei leitud");
 
         animal.Name = dto.Name;
         animal.Species = dto.Species;
@@ -102,18 +105,16 @@ public class AnimalService
         }
 
         await _animals.UpdateAsync(animal);
+        _logger.LogInformation("Looma andmed muudeti: id {AnimalId}, olek {Status}", animal.Id, animal.Status);
         return AnimalDto.FromAnimal(animal);
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        var animal = await _animals.GetByIdAsync(id);
-        if (animal == null)
-        {
-            return false;
-        }
+        var animal = await _animals.GetByIdAsync(id)
+            ?? throw new NotFoundException("Looma ei leitud");
 
         await _animals.DeleteAsync(animal);
-        return true;
+        _logger.LogInformation("Loom kustutati: {Name}, id {AnimalId}", animal.Name, id);
     }
 }
