@@ -141,3 +141,42 @@ Content-Type: application/json
 {
   "message": "Töötaja ei saa taotlust esitada."
 }
+
+### 16. Kõik taotlused (Staff)
+GET {{host}}/api/applications
+Authorization: Bearer {{staffToken}}
+
+### 17. Ainult uued taotlused (Staff)
+GET {{host}}/api/applications?status=New
+Authorization: Bearer {{staffToken}}
+
+### 18. Minu taotlused (Visitor)
+GET {{host}}/api/applications/my
+Authorization: Bearer {{visitorToken}}
+
+### 19. Taotluse kinnitamine (Staff), loom muutub olekusse Adopted
+PATCH {{host}}/api/applications/1/status
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "status": "Approved"
+}
+
+### 20. Taotluse tagasilükkamine (Staff), loom muutub vajadusel jälle Available
+PATCH {{host}}/api/applications/2/status
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "status": "Rejected"
+}
+
+### 21. Külastaja ei tohi taotlust menetleda (403)
+PATCH {{host}}/api/applications/1/status
+Authorization: Bearer {{visitorToken}}
+Content-Type: application/json
+
+{
+  "status": "Approved"
+}

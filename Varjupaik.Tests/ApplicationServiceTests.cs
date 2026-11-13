@@ -40,7 +40,7 @@ public class ApplicationServiceTests
 
         Assert.Null(application);
         Assert.NotNull(error);
-        _applications.Verify(a => a.AddAsync(It.IsAny<Application>()), Times.Never);
+        _applications.Verify(a => a.SaveChangesAsync(), Times.Never);
     }
 
     [Fact]
@@ -67,6 +67,7 @@ public class ApplicationServiceTests
         Assert.NotNull(application);
         Assert.Equal("New", application.Status);
         Assert.Equal(5, application.ApplicantUserId);
-        _applications.Verify(a => a.AddAsync(It.Is<Application>(x => x.AnimalId == 1)), Times.Once);
+        _applications.Verify(a => a.Add(It.Is<Application>(x => x.AnimalId == 1)), Times.Once);
+        _applications.Verify(a => a.SaveChangesAsync(), Times.Once);
     }
 }
