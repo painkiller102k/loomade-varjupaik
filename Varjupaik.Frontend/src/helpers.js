@@ -39,3 +39,7 @@ export function dateText(value) {
     minute: '2-digit',
   })
 }
+
+export function dateOnly(value) {
+  return new Date(value).toLocaleDateString('et-EE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}

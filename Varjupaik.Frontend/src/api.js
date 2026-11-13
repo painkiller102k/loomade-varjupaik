@@ -76,6 +76,10 @@ export const api = {
   login: (data) => request('/api/auth/login', json('POST', data)),
   register: (data) => request('/api/auth/register', json('POST', data)),
 
+  getVetVisits: (animalId) => request('/api/animals/' + animalId + '/vet-visits'),
+  addVetVisit: (animalId, data) =>
+    request('/api/animals/' + animalId + '/vet-visits', json('POST', data)),
+
   getApplications: (status) => request('/api/applications?' + query({ status })),
   getMyApplications: () => request('/api/applications/my'),
   changeApplicationStatus: (id, status) =>

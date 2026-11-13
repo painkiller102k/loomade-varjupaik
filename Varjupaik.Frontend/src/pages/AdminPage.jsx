@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { api, photoUrl } from '../api'
 import { useAuth } from '../AuthContext'
 import { ageText, speciesEmoji, statusNames } from '../helpers'
@@ -104,6 +104,7 @@ function AdminPage() {
               </div>
               <span className={'status-pill status-' + animal.status}>{statusNames[animal.status]}</span>
               <div className="admin-actions">
+                <Link to={'/haldus/' + animal.id + '/visiidid'} className="btn btn-ghost btn-small">Visiidid</Link>
                 <button className="btn btn-ghost btn-small" onClick={() => setEditing(animal)}>Muuda</button>
                 <button className="btn btn-danger btn-small" onClick={() => handleDelete(animal)}>Kustuta</button>
               </div>
