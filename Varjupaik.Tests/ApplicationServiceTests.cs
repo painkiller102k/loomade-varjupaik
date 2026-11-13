@@ -1,73 +1,90 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Varjupaik.Services;
+using Varjupaik.Services.Data;
 using Varjupaik.Services.Dtos;
 using Varjupaik.Services.Models;
+using Varjupaik.Services.Notifications;
 using Varjupaik.Services.Repositories;
 
 namespace Varjupaik.Tests;
 
-// ApplicationService testid mockitud repositooriumidega
 public class ApplicationServiceTests
 {
-    private readonly Mock<IApplicationRepository> _applications = new();
-    private readonly Mock<IAnimalRepository> _animals = new();
-    private readonly ApplicationService _service;
-
-    public ApplicationServiceTests()
-    {
-        _service = new ApplicationService(_applications.Object, _animals.Object);
-    }
-
     private static ApplicationCreateDto Dto() => new() { Message = "Mul on suur aed ja palju aega." };
 
-    [Fact]
-    public async Task Create_AnimalNotFound_ReturnsError()
+    // Päris repositooriumid ja andmebaas mälus; teavitaja on mock, sest siin teda ei testita
+    private static (ApplicationService Service, AppDbContext Db) CreateService()
     {
-        _animals.Setup(a => a.GetByIdAsync(99)).ReturnsAsync((Animal?)null);
+        var db = TestHelper.CreateDb();
+        db.Users.AddRange(
+            new User { Id = 1, Email = "mari@test.ee", Name = "Mari", Role = Roles.Visitor },
+            new User { Id = 2, Email = "juku@test.ee", Name = "Juku", Role = Roles.Visitor });
+        db.Animals.Add(new Animal { Id = 1, Name = "Muri", Species = "Koer", Age = 3, Status = AnimalStatus.Available });
+        db.SaveChanges();
 
-        var (application, error) = await _service.CreateAsync(99, 1, Dto());
-
-        Assert.Null(application);
-        Assert.Equal("Looma ei leitud", error);
+        var service = new ApplicationService(new ApplicationRepository(db), new AnimalRepository(db),
+            Mock.Of<IApplicationNotifier>(), NullLogger<ApplicationService>.Instance);
+        return (service, db);
     }
 
+    private static AnimalStatus AnimalStatusNow(AppDbContext db) => db.Animals.AsNoTracking().First(a => a.Id == 1).Status;
+
+    // Test 5 (mock): uus taotlus broneerib looma ja töötajaid teavitatakse ALLES PÄRAST salvestamist
     [Fact]
-    public async Task Create_AnimalAdopted_ReturnsError()
+    public async Task Create_ReservesAnimal_AndNotifiesStaffAfterSaving()
     {
-        _animals.Setup(a => a.GetByIdAsync(1)).ReturnsAsync(new Animal { Id = 1, Status = AnimalStatus.Adopted });
+        var calls = new List<string>();
+        var animal = new Animal { Id = 1, Name = "Muri", Species = "Koer", Status = AnimalStatus.Available };
 
-        var (application, error) = await _service.CreateAsync(1, 1, Dto());
+        var applications = new Mock<IApplicationRepository>();
+        applications.Setup(a => a.HasNewApplicationAsync(1, 5)).ReturnsAsync(false);
+        applications.Setup(a => a.SaveChangesAsync()).Callback(() => calls.Add("salvestatud")).Returns(Task.CompletedTask);
+        applications.Setup(a => a.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(
+            new Application { AnimalId = 1, Animal = animal, ApplicantUserId = 5, ApplicantUser = new User { Name = "Mari" }, Message = "Tere" });
 
-        Assert.Null(application);
-        Assert.NotNull(error);
-        _applications.Verify(a => a.SaveChangesAsync(), Times.Never);
+        var animals = new Mock<IAnimalRepository>();
+        animals.Setup(a => a.GetByIdAsync(1)).ReturnsAsync(animal);
+
+        var notifier = new Mock<IApplicationNotifier>();
+        notifier.Setup(n => n.ApplicationReceivedAsync(It.IsAny<ApplicationListDto>()))
+            .Callback(() => calls.Add("teavitatud")).Returns(Task.CompletedTask);
+
+        var service = new ApplicationService(applications.Object, animals.Object, notifier.Object, NullLogger<ApplicationService>.Instance);
+
+        await service.CreateAsync(1, 5, Dto());
+
+        Assert.Equal(AnimalStatus.Reserved, animal.Status);
+        Assert.Equal(new[] { "salvestatud", "teavitatud" }, calls);
+        notifier.Verify(n => n.ApplicationReceivedAsync(It.Is<ApplicationListDto>(d => d.AnimalName == "Muri")), Times.Once);
     }
 
+    // Test 6: kinnitamisel saab loom olekuks Adopted ja teised uued taotlused lükatakse tagasi
     [Fact]
-    public async Task Create_AlreadyApplied_ReturnsError()
+    public async Task Approve_AnimalAdopted_AndOtherApplicationsRejected()
     {
-        _animals.Setup(a => a.GetByIdAsync(1)).ReturnsAsync(new Animal { Id = 1, Status = AnimalStatus.Available });
-        _applications.Setup(a => a.HasNewApplicationAsync(1, 5)).ReturnsAsync(true);
+        var (service, db) = CreateService();
+        var first = await service.CreateAsync(1, 1, Dto());
+        var second = await service.CreateAsync(1, 2, Dto());
 
-        var (application, error) = await _service.CreateAsync(1, 5, Dto());
+        var result = await service.ChangeStatusAsync(first.Id, ApplicationStatus.Approved);
 
-        Assert.Null(application);
-        Assert.Equal("Sul on sellele loomale juba taotlus esitatud", error);
+        Assert.Equal("Approved", result.Status);
+        Assert.Equal(AnimalStatus.Adopted, AnimalStatusNow(db));
+        Assert.Equal(ApplicationStatus.Rejected, db.Applications.AsNoTracking().First(a => a.Id == second.Id).Status);
     }
 
+    // Test 7: viimase taotluse tagasilükkamisel on loom jälle Available
     [Fact]
-    public async Task Create_Valid_SavesApplicationWithStatusNew()
+    public async Task Reject_LastApplication_AnimalAvailableAgain()
     {
-        _animals.Setup(a => a.GetByIdAsync(1)).ReturnsAsync(new Animal { Id = 1, Status = AnimalStatus.Available });
-        _applications.Setup(a => a.HasNewApplicationAsync(1, 5)).ReturnsAsync(false);
+        var (service, db) = CreateService();
+        var created = await service.CreateAsync(1, 1, Dto());
+        Assert.Equal(AnimalStatus.Reserved, AnimalStatusNow(db));
 
-        var (application, error) = await _service.CreateAsync(1, 5, Dto());
+        await service.ChangeStatusAsync(created.Id, ApplicationStatus.Rejected);
 
-        Assert.Null(error);
-        Assert.NotNull(application);
-        Assert.Equal("New", application.Status);
-        Assert.Equal(5, application.ApplicantUserId);
-        _applications.Verify(a => a.Add(It.Is<Application>(x => x.AnimalId == 1)), Times.Once);
-        _applications.Verify(a => a.SaveChangesAsync(), Times.Once);
+        Assert.Equal(AnimalStatus.Available, AnimalStatusNow(db));
     }
 }
