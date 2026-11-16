@@ -3,8 +3,6 @@
 A system for managing a shelter's animals and adoptions. Staff add animals with a photo and a description.
 Visitors browse the public list, filter and search it, and submit adoption applications.
 
-School final project for the courses **Programming** and **Distributed Applications**.
-
 ## Architecture
 
 ```
