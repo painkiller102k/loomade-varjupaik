@@ -10,4 +10,7 @@ public class Animal
     public string? PhotoPath { get; set; }
     public AnimalStatus Status { get; set; } = AnimalStatus.Available;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Millal loom adopteeriti (määratakse, kui olek muutub Adopted)
+    public DateTime? AdoptedAt { get; set; }
 }

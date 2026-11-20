@@ -119,6 +119,7 @@ public class ApplicationService
         if (newStatus == ApplicationStatus.Approved)
         {
             animal.Status = AnimalStatus.Adopted;
+            animal.AdoptedAt = DateTime.UtcNow;
             foreach (var other in otherNew)
             {
                 other.Status = ApplicationStatus.Rejected;

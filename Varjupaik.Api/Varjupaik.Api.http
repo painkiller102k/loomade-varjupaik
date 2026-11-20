@@ -229,3 +229,6 @@ Content-Type: application/json
   "vaccinationDate": "2026-11-10",
   "nextDueDate": "2027-11-10"
 }
+
+### 29. Keskmine aeg varjupaigas liikide kaupa (avalik)
+GET {{host}}/api/statistics/average-stay

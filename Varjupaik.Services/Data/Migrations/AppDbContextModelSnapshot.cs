@@ -23,6 +23,9 @@ namespace Varjupaik.Services.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("AdoptedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Age")
                         .HasColumnType("INTEGER");
 

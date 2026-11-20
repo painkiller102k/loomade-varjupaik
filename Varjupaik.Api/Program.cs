@@ -37,6 +37,7 @@ builder.Services.AddScoped<AnimalService>();
 builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddScoped<VetVisitService>();
 builder.Services.AddScoped<VaccinationService>();
+builder.Services.AddScoped<StatisticsService>();
 builder.Services.AddScoped<TokenService>();
 
 // JWT autentimine

@@ -84,7 +84,7 @@ public static class DbSeeder
             new Animal { Name = "Lumi", Species = "Küülik", Age = 1, Description = "Valge kohev küülik, armastab porgandeid ja salatit.", Status = AnimalStatus.Available, CreatedAt = now.AddDays(-5) },
             new Animal { Name = "Bella", Species = "Koer", Age = 1, Description = "Energiline kutsikas, kes õpib kiiresti uusi trikke.", Status = AnimalStatus.Available, CreatedAt = now.AddDays(-3) },
             new Animal { Name = "Tom", Species = "Kass", Age = 9, Description = "Vanem ja väga hell kass, otsib vaikset kodu.", Status = AnimalStatus.Available, CreatedAt = now.AddDays(-120) },
-            new Animal { Name = "Pontu", Species = "Koer", Age = 4, Description = "Lõbus koer, kes armastab lapsi ja palliga mängimist.", Status = AnimalStatus.Adopted, CreatedAt = now.AddDays(-90) },
+            new Animal { Name = "Pontu", Species = "Koer", Age = 4, Description = "Lõbus koer, kes armastab lapsi ja palliga mängimist.", Status = AnimalStatus.Adopted, CreatedAt = now.AddDays(-90), AdoptedAt = now.AddDays(-20) },
             new Animal { Name = "Kiku", Species = "Lind", Age = 2, Description = "Jutukas viirpapagoi, kes oskab vilistada.", Status = AnimalStatus.Available, CreatedAt = now.AddDays(-20) },
             new Animal { Name = "Mõmmi", Species = "Küülik", Age = 3, Description = "Rahulik küülik pikkade kõrvadega.", Status = AnimalStatus.Reserved, CreatedAt = now.AddDays(-50) }
         );
