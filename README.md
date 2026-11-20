@@ -166,14 +166,21 @@ After a visitor's application is saved, the services layer sends this message to
 ## Data model
 
 - **User** – Id, Email, Name, PasswordHash, Role
-- **Animal** – Id, Name, Species, Age, Description, PhotoPath, Status (`Available`, `Reserved`, `Adopted`), CreatedAt
+- **Animal** – Id, Name, Species, Age, Description, PhotoPath, Status (`Available`, `Reserved`, `Adopted`), CreatedAt, AdoptedAt
 - **Application** – Id, AnimalId, ApplicantUserId, Message, Status (`New`, `Approved`, `Rejected`), CreatedAt
 - **VetVisit** – Id, AnimalId, VisitDate, Reason, Notes, Vet
 - **Vaccination** – Id, AnimalId, Name, VaccinationDate, NextDueDate
+- **Notification** – Id, Title, Message, CreatedAt
 
 Deleting an animal also deletes its vet visits and vaccinations.
 
 ## Branches
 
-- `main` – stable version
-- `frontend` – React client development
+| Branch | What it contains |
+|--------|------------------|
+| `main` | The final version of the project, everything is merged here |
+| `frontend` | React (Vite) client: pages, design, forms and live notifications |
+| `backend` | Web API and services layer: controllers, business logic, repositories, EF Core migrations and tests |
+| `worker` | Background service (Worker Service) that sends vaccination reminders every day at 08:00 |
+
+The work on each part was done in its own branch and then merged into `main`. The branches are kept to show how the project progressed.
