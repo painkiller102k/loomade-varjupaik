@@ -23,6 +23,9 @@ namespace Varjupaik.Services.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("AdoptedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("Age")
                         .HasColumnType("INTEGER");
 
@@ -83,6 +86,28 @@ namespace Varjupaik.Services.Data.Migrations
                     b.HasIndex("ApplicantUserId");
 
                     b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("Varjupaik.Services.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Varjupaik.Services.Models.User", b =>

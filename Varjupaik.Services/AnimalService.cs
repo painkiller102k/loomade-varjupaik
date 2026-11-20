@@ -79,7 +79,8 @@ public class AnimalService
             Age = dto.Age,
             Description = dto.Description,
             Status = dto.Status,
-            PhotoPath = photoPath
+            PhotoPath = photoPath,
+            AdoptedAt = dto.Status == AnimalStatus.Adopted ? DateTime.UtcNow : null
         };
 
         await _animals.AddAsync(animal);
@@ -96,6 +97,16 @@ public class AnimalService
         animal.Species = dto.Species;
         animal.Age = dto.Age;
         animal.Description = dto.Description;
+
+        // Adopteerimise kuupäev: määrame, kui loom just adopteeriti, ja kustutame, kui ta enam adopteeritud pole
+        if (dto.Status == AnimalStatus.Adopted && animal.Status != AnimalStatus.Adopted)
+        {
+            animal.AdoptedAt = DateTime.UtcNow;
+        }
+        else if (dto.Status != AnimalStatus.Adopted)
+        {
+            animal.AdoptedAt = null;
+        }
         animal.Status = dto.Status;
 
         // Pilti muudame ainult siis, kui laaditi uus pilt
