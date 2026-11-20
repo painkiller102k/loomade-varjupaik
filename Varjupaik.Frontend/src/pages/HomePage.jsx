@@ -6,6 +6,7 @@ import ApplyModal from '../components/ApplyModal'
 import Pagination from '../components/Pagination'
 import Hero from '../components/Hero'
 import HowTo from '../components/HowTo'
+import AverageStay from '../components/AverageStay'
 
 function HomePage() {
   const [filters, setFilters] = useState({
@@ -44,6 +45,7 @@ function HomePage() {
   return (
     <>
     <Hero />
+    <AverageStay />
     <HowTo />
     <section id="loomad" className="container section">
       <div className="section-head">

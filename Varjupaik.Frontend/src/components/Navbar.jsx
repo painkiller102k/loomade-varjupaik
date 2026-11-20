@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 import Logo from './Logo'
+import NotificationsBell from './NotificationsBell'
 
 function Navbar() {
   const { user, logout, isStaff, isVisitor } = useAuth()
@@ -27,6 +28,7 @@ function Navbar() {
 
           {user ? (
             <>
+              {isStaff && <NotificationsBell />}
               <span className="user-chip" title={user.email}>
                 {user.name} <small>{user.role}</small>
               </span>

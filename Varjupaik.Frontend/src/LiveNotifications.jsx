@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import { API_URL } from './api'
 import { useAuth } from './AuthContext'
 
-// Töötaja avab API-ga püsiühenduse (WebSocket) ja saab uue taotluse teate kohe.
+// Töötaja avab API-ga püsiühenduse (WebSocket) ja saab teated kohe:
+//  - ApplicationReceived: uus adopteerimise taotlus
+//  - Notification: teavitus (nt meeldetuletus vaktsineerimisest taustateenuselt)
 // Token läheb query-parameetris access_token, sest brauseri WebSocket ei saa päiseid saata.
 function LiveNotifications() {
   const { user, isStaff } = useAuth()
@@ -30,9 +32,21 @@ function LiveNotifications() {
         }
 
         if (message.type === 'ApplicationReceived') {
-          setToast(message.data)
+          setToast({
+            icon: '🔔',
+            title: 'Uus taotlus!',
+            text: message.data.applicantName + ' soovib adopteerida: ' + message.data.animalName,
+            link: '/taotlused',
+            linkText: 'Vaata taotlusi →',
+          })
           // Taotluste leht kuulab seda sündmust ja laeb nimekirja uuesti
           window.dispatchEvent(new CustomEvent('application-received', { detail: message.data }))
+        }
+
+        if (message.type === 'Notification') {
+          setToast({ icon: '💉', title: message.data.title, text: message.data.message, link: null })
+          // Kell menüüs kuulab seda sündmust
+          window.dispatchEvent(new CustomEvent('notification-received', { detail: message.data }))
         }
       }
 
@@ -64,11 +78,11 @@ function LiveNotifications() {
 
   return (
     <div className="live-toast" role="status">
-      <span className="live-icon">🔔</span>
+      <span className="live-icon">{toast.icon}</span>
       <div>
-        <strong>Uus taotlus!</strong>
-        <p>{toast.applicantName} soovib adopteerida: {toast.animalName}</p>
-        <Link to="/taotlused" onClick={() => setToast(null)}>Vaata taotlusi →</Link>
+        <strong>{toast.title}</strong>
+        <p>{toast.text}</p>
+        {toast.link && <Link to={toast.link} onClick={() => setToast(null)}>{toast.linkText}</Link>}
       </div>
       <button className="live-close" onClick={() => setToast(null)} aria-label="Sulge">×</button>
     </div>

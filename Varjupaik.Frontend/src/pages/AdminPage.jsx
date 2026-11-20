@@ -5,6 +5,7 @@ import { useAuth } from '../AuthContext'
 import { ageText, speciesEmoji, statusNames } from '../helpers'
 import AnimalForm from '../components/AnimalForm'
 import Pagination from '../components/Pagination'
+import UpcomingVaccinations from '../components/UpcomingVaccinations'
 
 function AdminPage() {
   const { isStaff } = useAuth()
@@ -70,6 +71,8 @@ function AdminPage() {
       </div>
 
       {message && <p className={'alert toast alert-' + message.type}>{message.text}</p>}
+
+      <UpcomingVaccinations />
 
       <div className="admin-layout">
         <AnimalForm key={editing ? editing.id : 'new'} animal={editing} onSave={handleSave} onCancel={() => setEditing(null)} />
