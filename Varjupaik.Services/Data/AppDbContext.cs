@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<VetVisit> VetVisits => Set<VetVisit>();
     public DbSet<Vaccination> Vaccinations => Set<Vaccination>();
+    public DbSet<Notification> Notifications => Set<Notification>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -88,6 +88,28 @@ namespace Varjupaik.Services.Data.Migrations
                     b.ToTable("Applications");
                 });
 
+            modelBuilder.Entity("Varjupaik.Services.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("Varjupaik.Services.Models.User", b =>
                 {
                     b.Property<int>("Id")

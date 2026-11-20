@@ -105,6 +105,12 @@ A **Visitor** account can be created on the "Registreeru" (register) page.
 | POST | `/api/animals/{id}/applications` | Visitor | Submit an adoption application (animal becomes `Reserved`) |
 | GET | `/api/applications?status=` | Admin, Staff | List applications, optional filter by status |
 | GET | `/api/applications/my` | Visitor | The visitor's own applications |
+| GET | `/api/vaccinations/upcoming?days=7` | Admin, Staff, Service | Vaccinations due in the next N days (or overdue), adopted animals excluded |
+| GET | `/api/animals/{id}/vaccinations` | Admin, Staff | Vaccination history of an animal |
+| POST | `/api/animals/{id}/vaccinations` | Admin, Staff | Add a vaccination |
+| GET | `/api/statistics/average-stay` | anonymous | Average days in the shelter per species |
+| POST | `/api/notifications` | Service | Create a notification (also pushed to staff over WebSocket) |
+| GET | `/api/notifications` | Admin, Staff | Latest 20 notifications |
 | GET | `/api/animals/{id}/vet-visits` | Admin, Staff | Vet visit history of an animal, newest first |
 | POST | `/api/animals/{id}/vet-visits` | Admin, Staff | Add a vet visit |
 | PATCH | `/api/applications/{id}/status` | Admin, Staff | Approve or reject an application; the animal status changes in the same transaction |

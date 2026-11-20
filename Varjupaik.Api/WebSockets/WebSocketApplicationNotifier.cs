@@ -27,4 +27,16 @@ public class WebSocketApplicationNotifier : IApplicationNotifier
 
         await _connections.BroadcastAsync(message);
     }
+
+    public async Task NotificationCreatedAsync(NotificationDto notification)
+    {
+        var message = JsonSerializer.Serialize(new
+        {
+            type = "Notification",
+            data = notification,
+            sentAt = DateTime.UtcNow
+        }, JsonOptions);
+
+        await _connections.BroadcastAsync(message);
+    }
 }

@@ -232,3 +232,29 @@ Content-Type: application/json
 
 ### 29. Keskmine aeg varjupaigas liikide kaupa (avalik)
 GET {{host}}/api/statistics/average-stay
+
+### Tokenid taustateenuse jaoks (service@varjupaik.ee / Service123!)
+@serviceToken = PASTE_SERVICE_TOKEN
+
+### 30. Sisselogimine taustateenusena
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "service@varjupaik.ee",
+  "password": "Service123!"
+}
+
+### 31. Loo teavitus (ainult Service)
+POST {{host}}/api/notifications
+Authorization: Bearer {{serviceToken}}
+Content-Type: application/json
+
+{
+  "title": "Lähenev vaktsineerimine",
+  "message": "Muri: Leetospiroos tuleb teha 5 päeva pärast."
+}
+
+### 32. Viimased teavitused (Staff)
+GET {{host}}/api/notifications
+Authorization: Bearer {{staffToken}}

@@ -6,4 +6,7 @@ namespace Varjupaik.Services.Notifications;
 public interface IApplicationNotifier
 {
     Task ApplicationReceivedAsync(ApplicationListDto application);
+
+    // Uus teavitus (nt lähenev vaktsineerimine), saadetakse kõigile ühendatud töötajatele
+    Task NotificationCreatedAsync(NotificationDto notification);
 }

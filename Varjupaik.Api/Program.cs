@@ -26,6 +26,7 @@ builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVetVisitRepository, VetVisitRepository>();
 builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 // Teenused
 // Reaalajas teavitused (WebSocket)
@@ -38,6 +39,7 @@ builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddScoped<VetVisitService>();
 builder.Services.AddScoped<VaccinationService>();
 builder.Services.AddScoped<StatisticsService>();
+builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TokenService>();
 
 // JWT autentimine
