@@ -25,6 +25,7 @@ builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVetVisitRepository, VetVisitRepository>();
+builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
 
 // Teenused
 // Reaalajas teavitused (WebSocket)
@@ -35,6 +36,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AnimalService>();
 builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddScoped<VetVisitService>();
+builder.Services.AddScoped<VaccinationService>();
 builder.Services.AddScoped<TokenService>();
 
 // JWT autentimine

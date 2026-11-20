@@ -206,3 +206,26 @@ Content-Type: application/json
   "visitDate": "2026-11-12",
   "vet": "Dr. Tamm"
 }
+
+### 25. Lähenevad vaktsineerimised järgmise 7 päeva jooksul (Staff või Service)
+GET {{host}}/api/vaccinations/upcoming?days=7
+Authorization: Bearer {{staffToken}}
+
+### 26. Vale päevade arv (400)
+GET {{host}}/api/vaccinations/upcoming?days=0
+Authorization: Bearer {{staffToken}}
+
+### 27. Looma vaktsineerimiste ajalugu (Staff)
+GET {{host}}/api/animals/1/vaccinations
+Authorization: Bearer {{staffToken}}
+
+### 28. Lisa vaktsineerimine (Staff)
+POST {{host}}/api/animals/1/vaccinations
+Authorization: Bearer {{staffToken}}
+Content-Type: application/json
+
+{
+  "name": "Marutaudi",
+  "vaccinationDate": "2026-11-10",
+  "nextDueDate": "2027-11-10"
+}
