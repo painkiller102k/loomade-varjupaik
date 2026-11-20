@@ -57,7 +57,25 @@ npm run dev
 
 Open http://localhost:5173. The API address can be changed with the `VITE_API_URL` environment variable.
 
-### 3. Tests
+### 3. Worker (background service)
+
+Reminds staff about upcoming vaccinations. Every day at 08:00 (local time) it logs in to the API as the `Service`
+account, calls `GET /api/vaccinations/upcoming?days=7` and sends one `POST /api/notifications` per vaccination.
+It talks to the API with `HttpClient` only and never touches the database. The business logic stays in the API.
+
+```bash
+dotnet run --project Varjupaik.Worker
+```
+
+Settings are in `Varjupaik.Worker/appsettings.json` (`Api` and `Worker` sections). To try it without waiting until 08:00:
+
+```bash
+Worker__RunOnStartup=true dotnet run --project Varjupaik.Worker
+```
+
+The API must be running first. The notifications appear for logged-in staff on the website.
+
+### 4. Tests
 
 ```bash
 dotnet test
