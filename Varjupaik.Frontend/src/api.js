@@ -80,6 +80,13 @@ export const api = {
   addVetVisit: (animalId, data) =>
     request('/api/animals/' + animalId + '/vet-visits', json('POST', data)),
 
+  getUpcomingVaccinations: (days) => request('/api/vaccinations/upcoming?days=' + days),
+  getVaccinations: (animalId) => request('/api/animals/' + animalId + '/vaccinations'),
+  addVaccination: (animalId, data) =>
+    request('/api/animals/' + animalId + '/vaccinations', json('POST', data)),
+  getAverageStay: () => request('/api/statistics/average-stay'),
+  getNotifications: () => request('/api/notifications'),
+
   getApplications: (status) => request('/api/applications?' + query({ status })),
   getMyApplications: () => request('/api/applications/my'),
   changeApplicationStatus: (id, status) =>

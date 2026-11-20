@@ -1292,3 +1292,227 @@ select {
   25% { transform: rotate(-18deg); }
   75% { transform: rotate(18deg); }
 }
+
+/* ===== Keskmine aeg varjupaigas ===== */
+.stay-section {
+  padding-top: 32px;
+}
+
+.stay-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.stay-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stay-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.stay-species {
+  font-weight: 800;
+  color: var(--green);
+}
+
+.stay-days {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--green-900);
+}
+
+.stay-bar {
+  height: 8px;
+  margin-top: 10px;
+  border-radius: 4px;
+  background: var(--green-light);
+  overflow: hidden;
+}
+
+.stay-bar div {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--green);
+}
+
+.stay-card.longest .stay-bar div {
+  background: var(--accent);
+}
+
+/* ===== Lähenevad vaktsineerimised ===== */
+.vaccine-box {
+  background: white;
+  border-radius: var(--radius);
+  border-left: 6px solid var(--sun);
+  padding: 18px 22px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.vaccine-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.vaccine-head h3 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--green-900);
+}
+
+.vaccine-list,
+.vaccine-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vaccine-list li,
+.vaccine-history li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.vaccine-list li:first-child,
+.vaccine-history li:first-child {
+  border-top: none;
+}
+
+.vaccine-list a {
+  text-decoration: none;
+  min-width: 130px;
+}
+
+.due-pill {
+  margin-left: auto;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.due-ok { background: var(--green-light); color: var(--green); }
+.due-soon { background: #fff1d6; color: #9a6410; }
+.due-late { background: #fde4df; color: #a12f15; }
+
+.forms-stack {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+
+.field-row-even {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ===== Teavituste kell ===== */
+.bell-wrap {
+  position: relative;
+}
+
+.bell-btn {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border: 2px solid var(--green-light);
+  border-radius: 50%;
+  background: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  font: 800 12px 'Nunito', sans-serif;
+  line-height: 20px;
+}
+
+.bell-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.bell-panel {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  z-index: 50;
+  width: 330px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 14px 16px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-hover);
+}
+
+.bell-panel h4 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: var(--green-900);
+}
+
+.bell-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bell-panel li {
+  padding: 10px 8px;
+  border-top: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.bell-panel li.is-new {
+  background: #fff6e8;
+}
+
+.bell-panel li p {
+  margin: 2px 0;
+  font-size: 14px;
+}
+
+.bell-panel li .muted {
+  font-size: 12px;
+}
+
+@media (max-width: 720px) {
+  .bell-panel {
+    position: fixed;
+    top: 70px;
+    right: 8px;
+    left: 8px;
+    width: auto;
+  }
+}
