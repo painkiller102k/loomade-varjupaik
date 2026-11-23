@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import AdminPage from './pages/AdminPage'
 import VetVisitsPage from './pages/VetVisitsPage'
+import AnimalPage from './pages/AnimalPage'
 import ApplicationsPage from './pages/ApplicationsPage'
 import MyApplicationsPage from './pages/MyApplicationsPage'
 
@@ -22,6 +23,7 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/loomad/:id" element={<AnimalPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/haldus" element={<AdminPage />} />

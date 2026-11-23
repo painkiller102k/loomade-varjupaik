@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, photoUrl } from '../api'
 import { useAuth } from '../AuthContext'
-import { ageText, speciesEmoji } from '../helpers'
+import { ageText } from '../helpers'
+import { CheckIcon } from './Icons'
+import Paw from './Paw'
 
 function ApplyModal({ animal, onClose }) {
   const { user, isVisitor } = useAuth()
@@ -50,7 +52,7 @@ function ApplyModal({ animal, onClose }) {
 
         <div className="modal-animal">
           <div className={'modal-avatar species-' + animal.species.toLowerCase()}>
-            {photo ? <img src={photo} alt="" /> : speciesEmoji(animal.species)}
+            {photo ? <img src={photo} alt="" /> : <Paw className="modal-paw" />}
           </div>
           <div>
             <h2>{animal.name}</h2>
@@ -60,8 +62,8 @@ function ApplyModal({ animal, onClose }) {
 
         {done ? (
           <div className="modal-success">
-            <span>🎉</span>
-            <h3>Taotlus on saadetud!</h3>
+            <CheckIcon className="success-icon" />
+            <h3>Taotlus on saadetud</h3>
             <p>Meie töötajad vaatavad selle peagi üle ja võtavad sinuga ühendust.</p>
             <button className="btn btn-primary" onClick={onClose}>Sulge</button>
           </div>
@@ -92,7 +94,7 @@ function ApplyModal({ animal, onClose }) {
             </div>
             {error && <p className="alert alert-error">{error}</p>}
             <button className="btn btn-accent btn-block" disabled={sending}>
-              {sending ? 'Saadan...' : 'Saada taotlus 🐾'}
+              {sending ? 'Saadan...' : 'Saada taotlus'}
             </button>
           </form>
         )}

@@ -1,4 +1,5 @@
 import { speciesList } from '../helpers'
+import { SearchIcon } from './Icons'
 
 function AnimalFilters({ filters, onChange }) {
   function set(name, value) {
@@ -12,7 +13,7 @@ function AnimalFilters({ filters, onChange }) {
           className={'chip' + (filters.species === '' ? ' active' : '')}
           onClick={() => set('species', '')}
         >
-          🐾 Kõik
+          Kõik
         </button>
         {speciesList.map((s) => (
           <button
@@ -20,14 +21,14 @@ function AnimalFilters({ filters, onChange }) {
             className={'chip' + (filters.species === s.name ? ' active' : '')}
             onClick={() => set('species', s.name)}
           >
-            {s.emoji} {s.name}
+            {s.name}
           </button>
         ))}
       </div>
 
       <div className="filter-row">
         <label className="search-box">
-          <span aria-hidden="true">🔍</span>
+          <SearchIcon className="search-icon" />
           <input
             type="search"
             placeholder="Otsi nime või kirjelduse järgi..."

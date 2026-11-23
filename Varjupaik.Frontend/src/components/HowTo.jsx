@@ -1,21 +1,32 @@
+import { DocIcon, HomeIcon, SearchIcon } from './Icons'
+
 const steps = [
-  { icon: '🔍', title: 'Leia oma lemmik', text: 'Sirvi loomi ja kasuta filtreid liigi, oleku ja nime järgi.' },
-  { icon: '📝', title: 'Esita taotlus', text: 'Loo konto ja kirjuta paar rida endast ning oma kodust.' },
-  { icon: '🏡', title: 'Vii sõber koju', text: 'Meie töötajad vaatavad taotluse üle ja võtavad sinuga ühendust.' },
+  { Icon: SearchIcon, title: 'Leia oma lemmik', text: 'Sirvi loomi ja kasuta filtreid liigi, oleku ja nime järgi.' },
+  { Icon: DocIcon, title: 'Esita taotlus', text: 'Loo konto ja kirjuta paar rida endast ning oma kodust.' },
+  { Icon: HomeIcon, title: 'Vii sõber koju', text: 'Meie töötajad vaatavad taotluse üle ja võtavad sinuga ühendust.' },
 ]
 
 function HowTo() {
   return (
-    <section id="kuidas" className="container section">
-      <div className="steps">
-        {steps.map((step, i) => (
-          <div className="step" key={step.title}>
-            <span className="step-number">{i + 1}</span>
-            <span className="step-icon">{step.icon}</span>
-            <h3>{step.title}</h3>
-            <p>{step.text}</p>
+    <section id="kuidas" className="band band-white">
+      <div className="container">
+        <div className="section-head">
+          <div>
+            <span className="eyebrow">Kolm lihtsat sammu</span>
+            <h2>Kuidas adopteerida</h2>
           </div>
-        ))}
+        </div>
+
+        <div className="steps">
+          {steps.map(({ Icon, title, text }, i) => (
+            <div className="step" key={title}>
+              <span className="step-number">{i + 1}</span>
+              <span className="step-icon"><Icon /></span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

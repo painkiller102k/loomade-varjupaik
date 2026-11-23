@@ -7,6 +7,12 @@ export const speciesList = [
   { name: 'Lind', emoji: '🦜' },
 ]
 
+// Liigi värv (kaartide täpid ja statistika)
+export function speciesColor(species) {
+  const colors = { koer: '#e8a76a', kass: '#8fa8ee', 'küülik': '#e693bc', lind: '#6fc59a' }
+  return colors[(species || '').toLowerCase()] || '#ffb347'
+}
+
 export function speciesEmoji(species) {
   const found = speciesList.find((s) => s.name.toLowerCase() === (species || '').toLowerCase())
   return found ? found.emoji : '🐾'
