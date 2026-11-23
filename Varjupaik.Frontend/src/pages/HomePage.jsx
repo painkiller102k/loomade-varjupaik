@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../api'
+import { useAuth } from '../AuthContext'
 import AnimalCard from '../components/AnimalCard'
 import AnimalFilters from '../components/AnimalFilters'
 import ApplyModal from '../components/ApplyModal'
@@ -7,8 +9,10 @@ import Pagination from '../components/Pagination'
 import Hero from '../components/Hero'
 import HowTo from '../components/HowTo'
 import AverageStay from '../components/AverageStay'
+import Paw from '../components/Paw'
 
 function HomePage() {
+  const { user } = useAuth()
   const [filters, setFilters] = useState({
     species: '',
     status: '',
@@ -45,11 +49,14 @@ function HomePage() {
   return (
     <>
     <Hero />
-    <AverageStay />
     <HowTo />
+    <AverageStay />
     <section id="loomad" className="container section">
       <div className="section-head">
-        <h2>Meie hoolealused</h2>
+        <div>
+          <span className="eyebrow">Otsivad kodu</span>
+          <h2>Meie hoolealused</h2>
+        </div>
         {result && <p className="muted">Leitud {result.totalCount} looma</p>}
       </div>
 
@@ -61,7 +68,7 @@ function HomePage() {
         <p className="muted center">Laen loomi...</p>
       ) : result && result.items.length === 0 ? (
         <div className="empty">
-          <span>🐾</span>
+          <Paw className="empty-paw" />
           <p>Selliste filtritega loomi ei leitud.</p>
         </div>
       ) : (
@@ -77,6 +84,19 @@ function HomePage() {
       )}
 
       {selected && <ApplyModal animal={selected} onClose={() => setSelected(null)} />}
+    </section>
+
+    <section className="container cta-wrap">
+      <div className="cta-band">
+        <div>
+          <h2>Leia endale uus parim sõber</h2>
+          <p>Iga loom siin ootab kedagi, kes ta koju viib. Tee esimene samm juba täna.</p>
+        </div>
+        <div className="cta-actions">
+          <a href="#loomad" className="btn btn-accent">Vaata loomi</a>
+          {!user && <Link to="/register" className="btn btn-light">Registreeru</Link>}
+        </div>
+      </div>
     </section>
     </>
   )

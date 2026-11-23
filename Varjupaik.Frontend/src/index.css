@@ -1516,3 +1516,793 @@ select {
     width: auto;
   }
 }
+
+/* =====================================================
+   UUS KUJUNDUS: hubane varjupaik (värvid samad)
+   ===================================================== */
+
+:root {
+  --radius-lg: 26px;
+}
+
+/* ----- Päis ----- */
+.navbar {
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.navbar-inner {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.nav-links > a:not(.btn) {
+  position: relative;
+  background: transparent !important;
+  border-radius: 0;
+  padding: 8px 6px;
+  margin: 0 6px;
+}
+
+.nav-links > a.active {
+  color: var(--green) !important;
+}
+
+.nav-links > a.active::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+.btn-light {
+  background: white;
+  color: var(--green-900);
+}
+
+.btn-light:hover {
+  background: var(--cream);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+}
+
+/* ----- Takskoer ----- */
+.dachshund .dog-head {
+  transform-box: view-box;
+  transform-origin: 110px 190px;
+  animation: dog-bob 3.2s ease-in-out infinite;
+}
+
+.dachshund .dog-eyes {
+  transform-box: view-box;
+  transform-origin: 110px 108px;
+  animation: dog-blink 5s infinite;
+}
+
+.dachshund .dog-paw {
+  transform-box: view-box;
+  transform-origin: 185px 192px;
+  animation: dog-wave 1.1s ease-in-out infinite;
+}
+
+@keyframes dog-wave {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(16deg); }
+}
+
+@keyframes dog-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+@keyframes dog-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ----- Esileht ----- */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 520px at 88% -8%, rgba(255, 179, 71, 0.4), transparent 62%),
+    var(--cream);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+  padding-top: 48px;
+  padding-bottom: 104px;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 16px 5px 6px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.hero-pill .logo-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.home-hero h1 {
+  margin: 18px 0 14px;
+  font-size: clamp(40px, 5.4vw, 64px);
+  color: var(--green-900);
+}
+
+.hero-scene {
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+}
+
+.hero-scene svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 24px 30px rgba(20, 58, 46, 0.18));
+}
+
+.hero-wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 60px;
+  display: block;
+}
+
+.stats div {
+  box-shadow: none;
+  border: 1px solid var(--border);
+}
+
+/* ----- Jaotised ----- */
+.band {
+  padding: 72px 0;
+}
+
+.band-white {
+  background: white;
+  padding-top: 40px;
+}
+
+.band-green {
+  background: #eef6f1;
+}
+
+.section {
+  padding-top: 72px;
+}
+
+.section-head h2 {
+  font-size: clamp(30px, 4vw, 42px);
+}
+
+.band .section-head {
+  margin-bottom: 28px;
+}
+
+.band-white .step {
+  background: var(--cream);
+  box-shadow: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.step-icon {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.step-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.stay-card {
+  border: 1px solid #dcebe2;
+  box-shadow: none;
+  border-radius: var(--radius-lg);
+}
+
+.stay-species {
+  display: flex;
+  align-items: center;
+}
+
+.stay-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.filters {
+  border: 1px solid var(--border);
+  box-shadow: none;
+  border-radius: var(--radius-lg);
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.empty-paw {
+  width: 54px;
+  color: #e5d6c0;
+}
+
+/* ----- Looma kaardid ----- */
+.animal-grid {
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 28px;
+}
+
+.animal-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.animal-card:hover {
+  transform: translateY(-6px);
+  border-color: transparent;
+  box-shadow: var(--shadow-hover);
+}
+
+.animal-photo-link {
+  display: block;
+  text-decoration: none;
+}
+
+.animal-photo {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.animal-photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.4) 0 16px, transparent 17px),
+    radial-gradient(circle at 86% 72%, rgba(255, 255, 255, 0.32) 0 30px, transparent 31px),
+    radial-gradient(circle at 70% 16%, rgba(255, 255, 255, 0.28) 0 9px, transparent 10px);
+}
+
+.animal-photo img {
+  position: relative;
+  transition: transform 0.5s;
+}
+
+.animal-card:hover .animal-photo img {
+  transform: scale(1.07);
+}
+
+.paw-art {
+  position: relative;
+  width: 32%;
+  color: rgba(255, 255, 255, 0.85);
+  transition: transform 0.3s;
+}
+
+.animal-card:hover .paw-art {
+  transform: rotate(-10deg) scale(1.08);
+}
+
+.status-badge {
+  z-index: 2;
+}
+
+.animal-body {
+  padding: 18px 22px 22px;
+}
+
+.animal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.animal-title h3 a {
+  color: var(--green-900);
+  text-decoration: none;
+}
+
+.animal-title h3 a:hover {
+  color: var(--accent-dark);
+}
+
+.age-chip {
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.animal-description {
+  -webkit-line-clamp: 2;
+  margin-bottom: 16px;
+}
+
+.animal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.more-link {
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.more-link:hover {
+  color: var(--accent-dark);
+}
+
+.found-home {
+  font-weight: 800;
+  color: var(--accent-dark);
+}
+
+.found-home.big {
+  display: inline-block;
+  padding: 10px 22px;
+  font-size: 18px;
+  background: #ffe4da;
+  border-radius: 999px;
+}
+
+/* ----- Looma leht ----- */
+.animal-page {
+  padding-top: 40px;
+}
+
+.animal-detail {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.detail-photo {
+  position: relative;
+  aspect-ratio: 4 / 3.4;
+  border-radius: 32px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffe3c2, #ffc6a8);
+  box-shadow: var(--shadow-hover);
+}
+
+.detail-photo.species-kass { background: linear-gradient(135deg, #d9ecff, #b9c8ff); }
+.detail-photo.species-küülik { background: linear-gradient(135deg, #fde2f1, #f6bfdc); }
+.detail-photo.species-lind { background: linear-gradient(135deg, #d8f5e3, #a8e2c0); }
+
+.detail-photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 16% 22%, rgba(255, 255, 255, 0.4) 0 26px, transparent 27px),
+    radial-gradient(circle at 88% 74%, rgba(255, 255, 255, 0.32) 0 54px, transparent 55px),
+    radial-gradient(circle at 74% 14%, rgba(255, 255, 255, 0.28) 0 14px, transparent 15px);
+}
+
+.detail-photo img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-paw {
+  position: relative;
+  width: 30%;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.detail-photo .status-badge {
+  top: 20px;
+  left: 20px;
+  padding: 7px 16px;
+  font-size: 14px;
+}
+
+.detail-info h1 {
+  margin: 0 0 18px;
+  font-size: clamp(40px, 5vw, 58px);
+  color: var(--green-900);
+}
+
+.fact-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.fact span {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.fact strong {
+  color: var(--green-900);
+}
+
+.detail-info h3 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: var(--green-900);
+}
+
+.detail-description {
+  margin: 0 0 14px;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.detail-actions .btn {
+  padding: 13px 26px;
+  font-size: 16px;
+}
+
+.similar {
+  margin-top: 72px;
+}
+
+/* ----- Taotluse aken ----- */
+.modal-paw {
+  width: 56%;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--green);
+}
+
+/* ----- Kutse ----- */
+.cta-wrap {
+  padding-top: 72px;
+}
+
+.cta-band {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 44px 48px;
+  border-radius: 32px;
+  color: white;
+  background:
+    radial-gradient(500px 260px at 100% 0%, rgba(255, 179, 71, 0.32), transparent 60%),
+    linear-gradient(135deg, var(--green), var(--green-900));
+}
+
+.cta-band h2 {
+  margin: 0 0 6px;
+  font-size: clamp(28px, 3.4vw, 38px);
+}
+
+.cta-band p {
+  margin: 0;
+  max-width: 480px;
+  color: #d8eadf;
+}
+
+.cta-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ----- Jalus ----- */
+.footer {
+  margin-top: 72px;
+  padding-top: 56px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 40px;
+  padding-bottom: 36px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+}
+
+.footer-brand .logo-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.footer-text {
+  max-width: 340px;
+  color: #b9c9c0;
+}
+
+.footer h4 {
+  margin: 0 0 12px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 18px;
+  color: white;
+}
+
+.footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  color: #b9c9c0;
+}
+
+.footer a {
+  color: #d8eadf;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--sun);
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 20px;
+  padding-bottom: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: #8fa89c;
+  font-size: 14px;
+}
+
+/* ----- Sisselogimine ja registreerimine ----- */
+.auth-page {
+  padding: 40px 0 24px;
+  background:
+    radial-gradient(700px 400px at 100% 0%, rgba(255, 179, 71, 0.26), transparent 60%);
+}
+
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 28px;
+  align-items: stretch;
+  max-width: 1040px;
+}
+
+.auth-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 40px;
+  border-radius: 32px;
+  color: #fdf3e3;
+  background: linear-gradient(155deg, var(--green), var(--green-900));
+}
+
+.auth-panel > *:not(.panel-paw) {
+  position: relative;
+}
+
+.panel-paw {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.07);
+}
+
+.panel-paw-1 { width: 190px; right: -40px; top: -30px; transform: rotate(18deg); }
+.panel-paw-2 { width: 140px; left: -30px; bottom: -30px; transform: rotate(-20deg); }
+
+.panel-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.panel-brand .logo-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.auth-panel h2 {
+  margin: 0 0 10px;
+  font-size: clamp(30px, 3.4vw, 40px);
+  color: white;
+}
+
+.auth-panel p {
+  margin: 0 0 24px;
+  color: #d8eadf;
+}
+
+.auth-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.auth-panel li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.auth-panel li svg {
+  width: 22px;
+  height: 22px;
+  color: var(--sun);
+  flex-shrink: 0;
+}
+
+.auth-form-wrap {
+  display: flex;
+  padding-top: 170px;
+}
+
+.auth-box {
+  position: relative;
+  width: 100%;
+  padding: 36px 36px 32px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.auth-dog {
+  position: absolute;
+  right: 34px;
+  bottom: 100%;
+  display: block;
+  width: 210px;
+  height: auto;
+  margin-bottom: -2px;
+}
+
+.auth-box h1 {
+  margin: 0;
+  font-size: 34px;
+  color: var(--green-900);
+}
+
+.auth-sub {
+  margin: 4px 0 22px;
+}
+
+/* ----- Väiksemad ekraanid ----- */
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    padding-bottom: 88px;
+  }
+
+  .hero-scene {
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .animal-detail {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .fact-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-band {
+    padding: 32px 26px;
+  }
+
+  .auth-box {
+    padding: 28px 22px;
+  }
+
+  .auth-dog {
+    width: 170px;
+    right: 22px;
+  }
+
+  .auth-form-wrap {
+    padding-top: 140px;
+  }
+}

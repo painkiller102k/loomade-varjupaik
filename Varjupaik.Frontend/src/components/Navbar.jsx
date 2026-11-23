@@ -17,7 +17,7 @@ function Navbar() {
       <div className="container navbar-inner">
         <Link to="/" className="brand">
           <Logo />
-          <span>Käpakodu</span>
+          <span>Loomade varjupaik</span>
         </Link>
 
         <nav className="nav-links">
